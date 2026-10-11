@@ -332,3 +332,6 @@ fieldset.demande p { margin: 0; }
 .vitrine .carte-type.statique:hover { transform:none; border-color:transparent; }
 .vitrine .grille-2 h3 { margin:16px 0 4px; font-size:15px; }
 .vitrine .bloc ul.petit { padding-left:18px; }
+.vitrine .questionnaires { display:flex; flex-wrap:wrap; gap:12px 18px; margin:12px 0 4px; }
+.vitrine .questionnaires > div { display:flex; flex-direction:column; gap:4px; max-width:340px; }
+.vitrine .questionnaires small { color: var(--gris); font-size:12.5px; line-height:1.35; }

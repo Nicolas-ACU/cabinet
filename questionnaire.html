@@ -64,6 +64,14 @@
     border:none; border-radius:9px; padding:13px 22px; font-size:1rem; font-weight:600; cursor:pointer;
   }
   .btn-primary{ background:var(--vert); color:#fff; }
+  /* Champs obligatoires manquants (11/10/2026) : signalés en couleur, passage de l'un au suivant */
+  .champ-manquant{ background:#fdecea; border-radius:8px; outline:2px solid #e57373; outline-offset:3px; }
+  .champ-manquant input[type=text], .champ-manquant input[type=date]{ border-color:#e57373 !important; }
+  #guideManquants{ width:100%; display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; background:#fdecea; color:var(--rouge); border:1px solid #f2b8b5; border-radius:9px; padding:8px 12px; font-size:0.92rem; font-weight:600; }
+  #guideManquants .liste-manquants{ font-weight:400; }
+  @media (max-width:600px){ #guideManquants .liste-manquants{ display:none; } #guideManquants{ padding:6px 10px; } }
+  #guideManquants button{ border:none; border-radius:7px; background:var(--rouge); color:#fff; font-weight:600; padding:7px 12px; cursor:pointer; }
+  .rappel-envoi{ margin-top:14px; background:#e8f5e9; border:1px solid #a8dab0; color:#1b5e20; border-radius:9px; padding:10px 12px; font-size:0.92rem; }
   .btn-secondary{ background:#eef2f5; color:#33404d; border:1px solid var(--bord); }
   .btn:disabled{ opacity:0.5; cursor:not-allowed; }
   #msg{ max-width:900px; margin:0 auto; padding:0 16px; }
@@ -518,10 +526,12 @@
       <div class="field"><label for="q_signature">Nom et prénom (tient lieu de signature)</label><input type="text" id="q_signature"></div>
       <div class="field"><label for="q_dateSignature">Date</label><input type="date" id="q_dateSignature"></div>
     </div>
+    <div class="rappel-envoi" id="rappelEnvoi">Une fois l'attestation remplie, touchez « Télécharger mon questionnaire » ci-dessous et transmettez le fichier à votre médecin.</div>
   </section>
 </div>
 
 <div class="actions">
+  <div id="guideManquants" style="display:none;"></div>
   <button class="btn btn-secondary" id="btnPrint">Imprimer / enregistrer en PDF</button>
   <button class="btn btn-primary" id="btnEnvoyer" style="display:none;">Envoyer au cabinet (chiffré)</button>
   <button class="btn btn-primary" id="btnFichierChiffre" style="display:none;">Créer mon fichier chiffré pour le cabinet</button>
@@ -1028,6 +1038,56 @@ function showMsg(html, cls){
   document.getElementById('msg').innerHTML = '<div class="'+cls+'">'+html+'</div>';
 }
 
+/* Champs obligatoires : [id de l'élément à atteindre, libellé, test « rempli »] */
+const CHAMPS_OBLIGATOIRES = [
+  ['q_nomNaissance', "nom de naissance", () => !!val('q_nomNaissance')],
+  ['q_prenomsNaissance', "prénom(s) de naissance", () => !!val('q_prenomsNaissance')],
+  ['q_naissance', "date de naissance", () => !!val('q_naissance')],
+  ['q_sexe', "sexe", () => !!radioVal('q_sexe')],
+  ['q_lieuNaissance', "commune (ou pays) de naissance", () => !!(val('q_lieuNaissance') || val('q_paysNaissance'))],
+  ['q_attestation', "case d'attestation", () => checked('q_attestation')],
+  ['q_signature', "nom en signature", () => !!val('q_signature')],
+];
+function _blocChamp(id){
+  const el = document.getElementById(id) || document.querySelector('input[name="'+id+'"]');
+  return el ? (el.closest('.field') || el.closest('label.chk') || el) : null;
+}
+function champsManquants(){ return CHAMPS_OBLIGATOIRES.filter(c => !c[2]()); }
+let _guideActif = false;
+/* Signale en couleur les champs manquants et affiche, au-dessus des boutons, le nombre restant et un bouton
+   « Aller au suivant ». Mis à jour à chaque saisie une fois la première validation tentée. */
+function majChampsManquants(){
+  const manquants = champsManquants();
+  CHAMPS_OBLIGATOIRES.forEach(c => { const b = _blocChamp(c[0]); if(b) b.classList.toggle('champ-manquant', _guideActif && manquants.includes(c)); });
+  const g = document.getElementById('guideManquants');
+  if(!g) return manquants;
+  if(!_guideActif || !manquants.length){ g.style.display = 'none'; g.innerHTML = ''; return manquants; }
+  g.style.display = '';
+  g.innerHTML = '<span>⚠️ ' + manquants.length + ' information' + (manquants.length > 1 ? 's' : '') + ' obligatoire' + (manquants.length > 1 ? 's' : '') + ' à compléter <small class="liste-manquants">: ' + manquants.map(c => c[1]).join(', ') + '</small></span>' +
+    '<button type="button" onclick="allerAuChampSuivant()">Aller ' + (manquants.length > 1 ? 'au suivant' : 'au champ') + ' →</button>';
+  return manquants;
+}
+let _dernierChamp = -1;
+function allerAuChampSuivant(){
+  const manquants = champsManquants();
+  if(!manquants.length) return;
+  const idx = manquants.map(c => CHAMPS_OBLIGATOIRES.indexOf(c));
+  const suivant = idx.find(i => i > _dernierChamp);
+  _dernierChamp = suivant !== undefined ? suivant : idx[0];
+  const c = CHAMPS_OBLIGATOIRES[_dernierChamp], b = _blocChamp(c[0]);
+  const el = document.getElementById(c[0]) || document.querySelector('input[name="'+c[0]+'"]');
+  if(b && b.scrollIntoView) b.scrollIntoView({ behavior:'smooth', block:'center' });
+  if(el && el.focus) setTimeout(() => { try{ el.focus({ preventScroll:true }); }catch(e){ el.focus(); } }, 350);
+}
+/* Appelé quand l'envoi est refusé : active le guide et emmène au premier champ manquant. */
+function signalerChampsManquants(){
+  _guideActif = true; _dernierChamp = -1;
+  majChampsManquants();
+  allerAuChampSuivant();
+}
+document.addEventListener('input', () => { if(_guideActif) majChampsManquants(); });
+document.addEventListener('change', () => { if(_guideActif) majChampsManquants(); });
+
 function validateBeforeDownload(){
   const missing = [];
   if(!val('q_nomNaissance')) missing.push("nom de naissance");
@@ -1059,10 +1119,12 @@ async function chiffrerPourCabinet(jwkPublique, objet){
 }
 if(window.DEPOT_CABINET && window.crypto && crypto.subtle){
   const be = document.getElementById('btnEnvoyer');
+  const re = document.getElementById('rappelEnvoi');
+  if(re) re.innerHTML = "Une fois l'attestation remplie, touchez <b>« Envoyer au cabinet (chiffré) »</b> ci-dessous : c'est terminé.";
   be.style.display = '';
   be.addEventListener('click', async function(){
     const missing = validateBeforeDownload();
-    if(missing.length){ showMsg("Merci de compléter avant d'envoyer : " + missing.join(", ") + ".", "alertbox"); window.scrollTo({top:0, behavior:"smooth"}); return; }
+    if(missing.length){ signalerChampsManquants(); return; }
     be.disabled = true; be.textContent = 'Envoi en cours…';
     try{
       const paquet = await chiffrerPourCabinet(window.DEPOT_CABINET.cle, buildData());
@@ -1088,11 +1150,13 @@ if(window.CLE_CABINET && window.CLE_CABINET.cle && window.crypto && crypto.subtl
   const me = document.getElementById('modeEmploi');
   if(me) me.innerHTML = "<b>Comment utiliser ce questionnaire ?</b> Il fonctionne entièrement dans votre navigateur : aucune réponse n'est envoyée sur internet pendant que vous le remplissez. À la fin, touchez « Créer mon fichier chiffré pour le cabinet » : vos réponses sont <b>chiffrées sur votre appareil</b>, seul votre médecin pourra les lire. Envoyez ensuite ce fichier <b>en pièce jointe par e-mail</b> à " + (window.CLE_CABINET.email || "au cabinet") + ". Vous pouvez aussi imprimer vos réponses et les apporter.";
   const bf = document.getElementById('btnFichierChiffre');
+  const re = document.getElementById('rappelEnvoi');
+  if(re) re.innerHTML = "Une fois l'attestation remplie, touchez <b>« Créer mon fichier chiffré pour le cabinet »</b> ci-dessous, puis envoyez le fichier <b>en pièce jointe</b> à <b>" + (window.CLE_CABINET.email || "au cabinet") + "</b>.";
   bf.style.display = '';
   document.getElementById('btnDownload').style.display = 'none';
   bf.addEventListener('click', async function(){
     const missing = validateBeforeDownload();
-    if(missing.length){ showMsg("Merci de compléter avant de créer le fichier : " + missing.join(", ") + ".", "alertbox"); window.scrollTo({top:0, behavior:"smooth"}); return; }
+    if(missing.length){ signalerChampsManquants(); return; }
     bf.disabled = true;
     try{
       const paquet = await chiffrerPourCabinet(window.CLE_CABINET.cle, buildData());
@@ -1124,11 +1188,7 @@ if(window.CLE_CABINET && window.CLE_CABINET.cle && window.crypto && crypto.subtl
 
 document.getElementById('btnDownload').addEventListener('click', function(){
   const missing = validateBeforeDownload();
-  if(missing.length){
-    showMsg("Merci de compléter avant de télécharger : " + missing.join(", ") + ".", "alertbox");
-    window.scrollTo({top:0, behavior:"smooth"});
-    return;
-  }
+  if(missing.length){ signalerChampsManquants(); return; }
   const data = buildData();
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
   const url = URL.createObjectURL(blob);

@@ -1,0 +1,334 @@
+/* Site du cabinet — feuille de style unique (patients + médecin). */
+:root {
+  --foret: #1F4D3A; --foret-2: #2D6A4F; --sauge: #7FB38F; --sable: #C9A66B;
+  --fond: #F4F1EA; --papier: #FFFFFF; --encre: #24302A; --gris: #6B756F; --trait: #E3DED3;
+  --vert-pale: #E8EFE9; --rouge: #B4443A; --rouge-pale: #F8E6E3; --ok-pale: #E3F1E6;
+  --ombre: 0 1px 2px rgba(31,77,58,.06), 0 8px 24px rgba(31,77,58,.07);
+  --rayon: 18px;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #121A16; --papier: #1A2520; --encre: #E7ECE8; --gris: #9AA79F; --trait: #2C3A33;
+    --vert-pale: #203229; --rouge-pale: #3A2220; --ok-pale: #1E3326; --foret: #8CC7A0; --foret-2: #6FB487;
+    --ombre: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; font-family: var(--sans); background: var(--fond); color: var(--encre); line-height: 1.55; font-size: 16px; min-height: 100vh; }
+a { color: inherit; }
+h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -.01em; line-height: 1.2; }
+h1 { font-size: clamp(26px, 6vw, 40px); margin: 8px 0 14px; }
+h2 { font-size: 21px; margin: 0 0 10px; }
+.petit { font-size: 13.5px; color: var(--gris); }
+.centre { text-align: center; }
+.lien { color: var(--foret); font-weight: 600; text-underline-offset: 3px; background: none; border: 0; padding: 0; font: inherit; cursor: pointer; text-decoration: underline; }
+code { font-size: 13px; background: var(--vert-pale); padding: 2px 6px; border-radius: 6px; word-break: break-all; }
+
+main { padding: 0 16px 40px; margin: 0 auto; max-width: 980px; }
+main.etroit { max-width: 560px; }
+main.large { max-width: 1180px; padding-top: 18px; }
+
+/* ───── En-tête patient ───── */
+.entete { padding: 18px 16px; max-width: 980px; margin: 0 auto; }
+.marque { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.marque strong { display: block; font-family: var(--serif); font-size: 18px; }
+.marque small { display: block; color: var(--gris); font-size: 13px; }
+.marque small.disciplines { color: var(--foret); font-weight: 600; letter-spacing: .01em; }
+.logo svg { display: block; }
+.entete.compact { padding-bottom: 4px; }
+
+/* ───── Accueil ───── */
+.hero { padding: 22px 0 10px; }
+.surtitre { text-transform: uppercase; letter-spacing: .14em; font-size: 12px; color: var(--sable); font-weight: 700; margin: 0; }
+.hero h1 em { color: var(--foret); font-style: italic; }
+.chapo { font-size: 18px; color: var(--gris); max-width: 560px; }
+.choix { display: grid; gap: 12px; margin: 26px 0 8px; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+.carte-type { display: flex; align-items: center; gap: 16px; padding: 18px; background: var(--papier); border-radius: var(--rayon); text-decoration: none; box-shadow: var(--ombre); border: 1.5px solid transparent; transition: transform .15s, border-color .15s; }
+.carte-type:hover, .carte-type:focus-visible { border-color: var(--sauge); transform: translateY(-2px); outline: none; }
+.carte-type .duree { flex: none; width: 64px; height: 64px; border-radius: 50%; background: var(--vert-pale); color: var(--foret); display: grid; place-content: center; text-align: center; font: 600 22px/1 var(--serif); }
+.carte-type .duree small { display: block; font: 600 11px var(--sans); margin-top: 2px; }
+.carte-type .txt { flex: 1; }
+.carte-type .txt strong { display: block; font-size: 17px; }
+.carte-type .txt span { color: var(--gris); font-size: 14px; }
+.carte-type .fleche { font-size: 22px; color: var(--sable); }
+
+.bloc { background: var(--papier); border-radius: var(--rayon); padding: 22px; margin: 16px 0; box-shadow: var(--ombre); }
+.bloc.mini { padding: 16px 20px; }
+.bloc.mini ul { margin: 0; padding-left: 20px; }
+.grille-2 { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.parcours { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.parcours li { display: flex; gap: 12px; }
+.parcours p { margin: 2px 0 0; color: var(--gris); font-size: 14px; }
+.pastille { flex: none; width: 30px; height: 30px; border-radius: 50%; background: var(--foret); color: var(--papier); display: grid; place-content: center; font-weight: 700; font-size: 14px; }
+.tarifs { list-style: none; padding: 0; margin: 0 0 8px; }
+.tarifs li { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--trait); }
+
+.pied { text-align: center; color: var(--gris); font-size: 13px; padding: 20px 16px 40px; }
+.pied p { margin: 6px 0; }
+.urgence { font-weight: 600; }
+
+/* ───── Étapes ───── */
+.etapes { display: flex; gap: 6px; list-style: none; padding: 0; margin: 10px 0 6px; font-size: 12px; color: var(--gris); }
+.etapes li { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+.etapes li::before { content: ""; height: 4px; border-radius: 4px; background: var(--trait); }
+.etapes li.faite::before, .etapes li.active::before { background: var(--foret); }
+.etapes li.active { color: var(--encre); font-weight: 600; }
+.etapes span { display: none; }
+h1 .sous { display: block; font: 500 15px var(--sans); color: var(--gris); margin-top: 6px; }
+
+/* ───── Choix de l'horaire ───── */
+.jours { display: grid; gap: 10px; }
+.jour { background: var(--papier); border-radius: var(--rayon); box-shadow: var(--ombre); overflow: hidden; }
+.jour summary { display: flex; align-items: center; gap: 14px; padding: 12px 16px; cursor: pointer; list-style: none; }
+.jour summary::-webkit-details-marker { display: none; }
+.jour .date { flex: none; width: 52px; text-align: center; border-radius: 12px; background: var(--vert-pale); padding: 6px 0; line-height: 1.1; }
+.jour .date span { display: block; font-size: 11px; color: var(--gris); text-transform: uppercase; }
+.jour .date strong { display: block; font: 600 22px var(--serif); color: var(--foret); }
+.jour .jour-txt { flex: 1; font-weight: 600; }
+.jour .jour-txt::first-letter, .recap strong::first-letter, .nav-jour h1::first-letter, .tableau-plages td:first-child a::first-letter { text-transform: uppercase; }
+.jour .jour-txt, .recap strong { display: inline-block; }
+.jour .nb { font-size: 13px; color: var(--gris); }
+.horaires { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; padding: 2px 16px 16px; }
+.horaire { font: 600 16px var(--sans); padding: 12px 0; border-radius: 12px; border: 1.5px solid var(--trait); background: var(--papier); color: var(--encre); cursor: pointer; transition: all .12s; }
+.horaire:hover, .horaire:focus-visible { border-color: var(--foret); background: var(--foret); color: var(--papier); outline: none; }
+.vide { background: var(--papier); border-radius: var(--rayon); padding: 22px; text-align: center; box-shadow: var(--ombre); }
+
+/* ───── Formulaires ───── */
+.recap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; background: var(--vert-pale); border-radius: 14px; padding: 12px 16px; margin: 14px 0; }
+.recap span { color: var(--gris); font-size: 14px; }
+.recap a { margin-left: auto; font-size: 14px; color: var(--foret); }
+.formulaire { display: grid; gap: 14px; }
+.formulaire label { display: grid; gap: 6px; font-weight: 600; font-size: 14px; }
+.formulaire small { font-weight: 400; color: var(--gris); }
+.deux { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+input, select, textarea { font: inherit; color: var(--encre); background: var(--papier); border: 1.5px solid var(--trait); border-radius: 12px; padding: 12px 14px; width: 100%; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--foret); box-shadow: 0 0 0 3px color-mix(in srgb, var(--sauge) 35%, transparent); }
+input.code { font-size: 28px; letter-spacing: .4em; text-align: center; font-weight: 700; }
+.case { display: flex !important; grid-template-columns: none; gap: 10px; align-items: flex-start; font-weight: 400 !important; }
+.case input { width: 20px; height: 20px; flex: none; margin-top: 2px; accent-color: var(--foret); }
+.option { background: var(--papier); border: 1.5px dashed var(--trait); border-radius: 14px; padding: 12px 14px; display: grid; gap: 12px; }
+.option summary { cursor: pointer; font-weight: 600; color: var(--foret); }
+.option[open] { display: grid; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font: 600 15px var(--sans); padding: 12px 20px; border-radius: 999px; border: 1.5px solid var(--trait); background: var(--papier); color: var(--encre); text-decoration: none; cursor: pointer; transition: all .12s; }
+.btn:hover { border-color: var(--foret); }
+.btn.principal { background: var(--foret); border-color: var(--foret); color: var(--papier); }
+.btn.principal:hover { filter: brightness(1.08); }
+.btn.grand { width: 100%; padding: 18px; font-size: 18px; }
+.formulaire .btn.principal { padding: 15px; font-size: 16px; }
+.btn.discret { background: transparent; }
+.btn.danger { background: var(--rouge); border-color: var(--rouge); color: #fff; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:focus-visible { outline: 3px solid var(--sauge); outline-offset: 2px; }
+
+.alerte { padding: 12px 16px; border-radius: 12px; background: var(--vert-pale); margin: 12px 0; }
+.alerte.erreur { background: var(--rouge-pale); color: var(--rouge); font-weight: 600; }
+.alerte.succes { background: var(--ok-pale); font-weight: 600; }
+
+/* ───── Rendez-vous du patient ───── */
+.ticket { position: relative; background: var(--papier); border-radius: var(--rayon); padding: 22px 22px 18px; margin: 16px 0; box-shadow: var(--ombre); border-top: 6px solid var(--foret); }
+.ticket.barre { border-top-color: var(--gris); opacity: .75; }
+.ticket.barre .quand { text-decoration: line-through; }
+.ticket p { margin: 0 0 6px; }
+.ticket .etat { font-size: 12px; text-transform: uppercase; letter-spacing: .12em; font-weight: 700; color: var(--foret); }
+.ticket .type { color: var(--gris); }
+.ticket .quand { font-family: var(--serif); font-size: 24px; line-height: 1.25; margin: 10px 0; }
+.ticket .quand::first-letter { text-transform: uppercase; }
+.ticket .quand strong { font-size: 40px; }
+.ticket .ou, .ticket .qui { font-size: 14px; color: var(--gris); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+.salle-accueil { background: var(--salle, var(--sauge)); color: #13241B; border-radius: var(--rayon); padding: 26px 22px; text-align: center; margin: 16px 0; box-shadow: var(--ombre); }
+.salle-accueil p { margin: 0 0 8px; }
+.salle-accueil strong { display: block; font: 600 30px/1.2 var(--serif); }
+.salle-accueil.attente { background: color-mix(in srgb, var(--salle) 35%, var(--papier)); color: var(--encre); }
+.salle-accueil span { display: block; margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; font-size: 13px; }
+
+/* ───── Note d'honoraires / courrier (impression) ───── */
+.outils-impression { margin: 16px 0; display: flex; gap: 8px; }
+.feuille { background: #fff; color: #1d1d1d; border-radius: 8px; padding: 40px 44px; box-shadow: var(--ombre); max-width: 800px; margin: 0 auto; font-size: 14.5px; }
+.feuille header { display: flex; justify-content: space-between; gap: 20px; font-size: 13px; line-height: 1.5; border-bottom: 1px solid #ddd; padding-bottom: 18px; margin-bottom: 26px; }
+.feuille .droite { text-align: right; }
+.feuille h1 { font-size: 24px; color: #1F4D3A; }
+.feuille h1 span { font: 500 15px var(--sans); color: #666; margin-left: 8px; }
+.feuille table { width: 100%; border-collapse: collapse; margin: 18px 0; }
+.feuille th, .feuille td { text-align: left; padding: 10px 8px; border-bottom: 1px solid #e5e5e5; vertical-align: top; }
+.feuille tfoot td { font-weight: 700; border-bottom: 0; }
+.feuille .montant { text-align: right; white-space: nowrap; }
+.feuille .petit { color: #666; }
+.texte-courrier { border: 1px dashed #ccc; background: #fff; color: #1d1d1d; font: 15px/1.6 var(--sans); resize: vertical; min-height: 360px; overflow: hidden; }
+@media print {
+  body { background: #fff; }
+  .outils-impression, .barre, .courrier > h1, .courrier > p { display: none !important; }
+  main { padding: 0; max-width: none; }
+  .feuille { box-shadow: none; padding: 0; max-width: none; }
+  .texte-courrier { border: 0; padding: 0; }
+  @page { size: A4; margin: 18mm; }
+}
+
+/* ───── Espace médecin ───── */
+.barre { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 12px 20px; background: #1F4D3A; color: #F4F1EA; position: sticky; top: 0; z-index: 5; }
+.barre nav { display: flex; gap: 4px; flex-wrap: wrap; flex: 1; }
+.barre nav a { text-decoration: none; padding: 6px 12px; border-radius: 999px; font-size: 14px; opacity: .85; }
+.barre nav a.actif, .barre nav a:hover { background: rgba(255,255,255,.14); opacity: 1; }
+.barre .lien { color: #F4F1EA; font-size: 14px; }
+.connexion { padding-top: 12vh; }
+
+.nav-jour { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.nav-jour h1 { font-size: 26px; margin: 0; }
+.nav-jour .btn { padding: 6px 14px; font-size: 18px; }
+
+.prochaine { display: flex; flex-direction: column; gap: 2px; background: var(--foret); color: var(--fond); border-radius: var(--rayon); padding: 16px 20px; margin: 16px 0; box-shadow: var(--ombre); }
+.prochaine .etiquette { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; opacity: .75; font-weight: 700; }
+.prochaine strong { font: 600 21px var(--serif); }
+.prochaine span:last-child:not(.etiquette) { opacity: .85; font-size: 14px; }
+
+.minuteur { font-variant-numeric: tabular-nums; font-weight: 700; }
+.minuteur.gros { display: block; font: 700 38px var(--sans); font-variant-numeric: tabular-nums; margin: 4px 0; }
+.minuteur.bientot { color: var(--sable); }
+.minuteur.alerte-fin { color: var(--rouge); animation: pulse 1s infinite; }
+.prochaine .minuteur.alerte-fin { color: #FFD1CB; }
+@keyframes pulse { 50% { opacity: .45; } }
+
+.frise { background: var(--papier); border-radius: var(--rayon); padding: 18px 18px 10px; box-shadow: var(--ombre); margin: 16px 0; overflow-x: auto; }
+.graduations { position: relative; height: 18px; margin-left: 76px; font-size: 11px; color: var(--gris); min-width: 520px; }
+.graduations span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.graduations span:last-child { transform: translateX(-100%); }
+.graduations span:first-child { transform: none; }
+.ligne { display: flex; align-items: center; gap: 10px; margin: 8px 0; min-width: 596px; }
+.ligne .nom { width: 66px; flex: none; font-size: 13px; font-weight: 700; border-left: 4px solid var(--salle); padding-left: 8px; }
+.piste { position: relative; flex: 1; height: 38px; background: repeating-linear-gradient(90deg, transparent 0 calc(100%/8 - 1px), var(--trait) calc(100%/8 - 1px) calc(100%/8)); border-radius: 8px; }
+.piste .ouverte { position: absolute; top: 0; bottom: 0; background: var(--vert-pale); border-radius: 8px; }
+.piste .seance { position: absolute; top: 4px; bottom: 4px; display: flex; align-items: center; border-radius: 7px; background: color-mix(in srgb, var(--type, var(--sauge)) 28%, var(--papier)); overflow: hidden; font-size: 11.5px; border: 1px solid color-mix(in srgb, var(--type, var(--foret)) 55%, transparent); }
+.piste .seance i { display: block; align-self: stretch; background: var(--type, var(--foret)); flex: none; }
+.piste .seance b { flex: 1; text-align: center; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; padding: 0 3px; font-weight: 600; }
+.piste .seance.termine { opacity: .5; }
+.piste .seance.pose { box-shadow: 0 0 0 2px var(--sable); }
+.legende { font-size: 12px; color: var(--gris); display: flex; align-items: center; gap: 6px; margin: 8px 0 0; }
+.legende span { display: inline-block; width: 14px; height: 10px; border-radius: 3px; margin-left: 10px; }
+.l-med { background: var(--foret); } .l-pose { background: color-mix(in srgb, var(--sauge) 40%, var(--papier)); border: 1px solid var(--trait); }
+
+.salles { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin: 16px 0; }
+.salle { background: var(--papier); border-radius: var(--rayon); padding: 16px 18px; box-shadow: var(--ombre); border-top: 6px solid var(--salle); min-height: 150px; }
+.salle h2 { font-size: 18px; }
+.salle .libre { color: var(--gris); font-style: italic; }
+.en-cours { display: flex; flex-direction: column; gap: 2px; }
+.en-cours .statut { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; font-weight: 700; color: var(--foret); }
+.en-cours strong { font-size: 19px; }
+.en-cours > span:not(.statut):not(.minuteur) { color: var(--gris); font-size: 14px; }
+.jauge { height: 8px; background: var(--vert-pale); border-radius: 8px; overflow: hidden; margin-top: 10px; }
+.jauge span { display: block; height: 100%; background: var(--salle); transition: width 1s linear; }
+
+.liste { background: var(--papier); border-radius: var(--rayon); padding: 18px; box-shadow: var(--ombre); }
+.liste h2 .nb { font: 600 13px var(--sans); background: var(--vert-pale); color: var(--foret); border-radius: 999px; padding: 2px 10px; vertical-align: middle; }
+.liste ul { list-style: none; margin: 0; padding: 0; }
+.rdv { display: grid; grid-template-columns: 56px 80px 1fr auto; gap: 6px 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--trait); }
+.rdv .heure { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 17px; }
+.rdv .qui small { display: block; color: var(--gris); }
+.rdv .statut { font-size: 13px; color: var(--gris); }
+.rdv .actions { grid-column: 1 / -1; margin: 0; }
+.rdv.termine, .rdv.annule, .rdv.absent { opacity: .6; }
+.rdv.annule .qui strong { text-decoration: line-through; }
+.pastille-salle { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; background: color-mix(in srgb, var(--salle) 30%, var(--papier)); text-align: center; }
+form.inline { display: inline; }
+.terminer { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; background: var(--vert-pale); padding: 10px 12px; border-radius: 14px; }
+.terminer input[name=montant] { width: 90px; padding: 8px 10px; }
+.terminer select { width: auto; padding: 8px 10px; }
+.terminer label { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+
+.plage-form { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); align-items: end; background: var(--papier); padding: 18px; border-radius: var(--rayon); box-shadow: var(--ombre); }
+.aide { display: flex; flex-wrap: wrap; gap: 6px 18px; background: var(--vert-pale); border-radius: 14px; padding: 14px 18px; margin: 16px 0; font-size: 14px; }
+.aide strong { flex-basis: 100%; }
+.aide small { flex-basis: 100%; color: var(--gris); }
+.tableau-plages { width: 100%; border-collapse: collapse; background: var(--papier); border-radius: var(--rayon); overflow: hidden; box-shadow: var(--ombre); }
+.tableau-plages th, .tableau-plages td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--trait); font-size: 14px; }
+.tableau-plages td:first-child a { display: inline-block; }
+.adresse-secrete { background: var(--papier); padding: 14px; border-radius: 12px; box-shadow: var(--ombre); }
+
+.boite { list-style: none; padding: 0; }
+.boite a { display: block; background: var(--papier); padding: 12px 16px; border-radius: 12px; margin: 8px 0; text-decoration: none; box-shadow: var(--ombre); }
+.boite span { display: block; font-size: 13px; color: var(--gris); }
+
+@media (max-width: 560px) {
+  .deux { grid-template-columns: 1fr; }
+  .rdv { grid-template-columns: 50px 1fr; }
+  .rdv .pastille-salle { grid-column: 2; justify-self: start; }
+  .rdv .qui { grid-column: 1 / -1; }
+  .feuille { padding: 22px 18px; }
+  .feuille header { flex-direction: column; }
+  .feuille .droite { text-align: left; }
+}
+.salle .attend { margin: 12px 0 0; padding: 8px 12px; border-radius: 10px; background: var(--vert-pale); font-size: 14px; }
+
+/* ───── Accueil : trois consultations et encadrés ───── */
+.choix.trois { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.choix.quatre { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 640px) { .choix.quatre { grid-template-columns: 1fr; } }
+.bloc h3 { font: 600 16px var(--sans); margin: 0 0 8px; color: var(--foret); }
+.encadre-mpo { border-left: 6px solid var(--foret); }
+.temps { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-top: 14px; }
+.temps > div { background: var(--vert-pale); border-radius: 14px; padding: 16px 18px; }
+.temps h3 span { color: var(--sable); }
+.coches { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; font-size: 15px; }
+.coches li { padding-left: 24px; position: relative; }
+.coches li::before { content: "✓"; position: absolute; left: 0; color: var(--foret); font-weight: 700; }
+.encadre-acu { border-left: 6px solid var(--sable); }
+.mots-cles { list-style: none; padding: 0; margin: 4px 0 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.mots-cles li { padding: 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--sable) 22%, var(--papier)); font-weight: 600; font-size: 14px; }
+.synthese { font-style: italic; color: var(--foret); }
+fieldset.demande { border: 1.5px solid var(--sable); border-radius: 14px; padding: 14px; display: grid; gap: 12px; margin: 0; }
+fieldset.demande legend { font-weight: 700; padding: 0 6px; color: var(--sable); }
+fieldset.demande p { margin: 0; }
+.demande-info { color: var(--sable) !important; font-weight: 600; }
+.carte-type .groupe { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; color: var(--sable); font-weight: 700; margin-bottom: 2px; }
+
+/* Couleurs par type de consultation, ligne « Médecin », pause repas */
+.ligne.medecin .nom { border-left-color: var(--encre); }
+.ligne.medecin .piste { height: 26px; }
+.piste .present { position: absolute; top: 6px; bottom: 6px; background: var(--encre); border-radius: 3px; opacity: .75; }
+.piste .repas { position: absolute; top: 2px; bottom: 2px; border-radius: 6px; background: repeating-linear-gradient(45deg, var(--sable), var(--sable) 4px, color-mix(in srgb, var(--sable) 60%, var(--papier)) 4px, color-mix(in srgb, var(--sable) 60%, var(--papier)) 8px); color: #3b2d10; font-size: 10.5px; font-weight: 700; display: grid; place-content: center; }
+.legende { flex-wrap: wrap; }
+.l-type { background: var(--type); }
+.l-repas { background: var(--sable); }
+.alerte-repas { color: var(--rouge); }
+.puce-type { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--type); background: color-mix(in srgb, var(--type) 14%, var(--papier)); border-radius: 999px; padding: 1px 8px; margin-right: 4px; }
+.rdv { border-left: 4px solid var(--type, transparent); padding-left: 10px; }
+.legende .item { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; width: auto; height: auto; margin: 0 14px 0 0; background: none; border-radius: 0; }
+.legende .item i { display: inline-block; width: 14px; height: 10px; border-radius: 3px; background: var(--type); }
+.legende .item i.l-repas { background: var(--sable); }
+.legende .item.discret { color: var(--gris); }
+.piste .repas { z-index: 2; box-shadow: 0 0 0 2px var(--papier); }
+
+/* Liste d'attente */
+.case.attente { background: var(--vert-pale); border-radius: 12px; padding: 12px 14px; }
+.liste-attente { background: var(--papier); border-radius: var(--rayon); padding: 14px 18px; box-shadow: var(--ombre); margin: 12px 0; display: grid; gap: 10px; border-left: 5px solid var(--trait); }
+.liste-attente.inscrit { border-left-color: var(--foret); }
+.liste-attente p { margin: 0; font-size: 14.5px; }
+.puce-attente { display: inline-block; font-size: 11.5px; font-weight: 700; color: var(--foret); background: var(--vert-pale); border-radius: 999px; padding: 1px 8px; margin-right: 4px; }
+.nav-jour .btn.dossier { margin-left: auto; font-size: 14px; padding: 8px 14px; }
+.puce-questionnaire { display: inline-block; font-size: 11.5px; font-weight: 700; color: #1565c0; background: #e3eefb; border-radius: 999px; padding: 1px 8px; margin-right: 4px; }
+
+/* 04/10/2026 : consultation d'anesthésie délocalisée, alertes de nouveaux horaires, gestion des rendez-vous par le médecin */
+.encadre-anesthesie { border-left: 6px solid #4F74A8; }
+.jour .tot { display: block; font-size: 11.5px; font-weight: 600; color: var(--sable); }
+.avertissement { color: var(--rouge); font-weight: 600; }
+.sans-demande { color: var(--rouge); }
+.alerte-creneaux { margin: 18px 0; background: var(--papier); border-radius: var(--rayon); padding: 12px 18px; box-shadow: var(--ombre); }
+.alerte-creneaux summary { cursor: pointer; font-weight: 600; color: var(--foret); }
+.alerte-creneaux form { margin-top: 10px; }
+.liste .actions .btn.discret { font-size: 13px; }
+.tarifs .detail-tarif { display: block; font-size: 12px; color: var(--gris); margin-top: 2px; }
+.tarifs li strong { white-space: nowrap; }
+
+/* Site vitrine (statique) — compléments au style du site du cabinet */
+.vitrine .actions-hero { display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 6px; }
+.vitrine .btn.principal { background: var(--foret); color:#fff; border-color: var(--foret); }
+.vitrine .btn.inactif { opacity:.55; cursor:default; }
+.vitrine .carte-type.statique { cursor:default; }
+.vitrine .carte-type.statique:hover { transform:none; border-color:transparent; }
+.vitrine .grille-2 h3 { margin:16px 0 4px; font-size:15px; }
+.vitrine .bloc ul.petit { padding-left:18px; }

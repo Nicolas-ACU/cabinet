@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<meta name="referrer" content="no-referrer">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire médical avant anesthésie</title>
+<style>
+  :root{
+    --bleu:#1e5f8c; --bleu-clair:#eaf3fa; --vert:#2e7d4f; --rouge:#b3261e; --gris:#5b6570; --bord:#d6dee5;
+  }
+  *{box-sizing:border-box;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    margin:0; background:#f4f7f9; color:#1c2733; line-height:1.45;
+  }
+  header{
+    background:var(--bleu); color:#fff; padding:22px 18px;
+  }
+  header h1{ margin:0 0 6px 0; font-size:1.5rem; }
+  header p{ margin:0; font-size:0.95rem; opacity:0.92; max-width:900px; }
+  .wrap{ max-width:900px; margin:0 auto; padding:18px 16px 90px 16px; }
+  .intro-box{
+    background:#fff8e1; border:1px solid #f0d98c; border-radius:10px; padding:14px 16px; margin:16px 0 22px 0; font-size:0.95rem;
+  }
+  .intro-box b{ color:#8a6d00; }
+  section.q-section{
+    background:#fff; border:1px solid var(--bord); border-radius:12px; padding:18px 18px 14px 18px; margin-bottom:18px;
+  }
+  section.q-section h2{
+    margin:0 0 4px 0; font-size:1.1rem; color:var(--bleu); border-bottom:2px solid var(--bleu-clair); padding-bottom:8px;
+  }
+  section.q-section .hint{ font-size:0.85rem; color:var(--gris); margin:4px 0 14px 0; }
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
+  .grid3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px 16px; }
+  @media (max-width:640px){ .grid2, .grid3{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:4px; margin-bottom:10px; }
+  .field label{ font-size:0.88rem; font-weight:600; color:#33404d; }
+  .field input[type=text], .field input[type=number], .field input[type=date], .field select, .field textarea{
+    padding:10px 11px; border:1px solid var(--bord); border-radius:8px; font-size:1rem; font-family:inherit; width:100%;
+  }
+  .field textarea{ min-height:70px; resize:vertical; }
+  .chk-row{ margin-bottom:9px; }
+  label.chk{
+    display:inline-flex; align-items:center; gap:9px; font-size:0.98rem; cursor:pointer; padding:6px 4px;
+  }
+  label.chk input[type=checkbox]{ width:20px; height:20px; flex:none; cursor:pointer; }
+  .chk-row input.prec{
+    display:block; margin:5px 0 0 30px; width:calc(100% - 30px); padding:8px 10px; border:1px solid var(--bord); border-radius:7px; font-family:inherit;
+  }
+  .radio-group{ display:flex; flex-wrap:wrap; gap:10px 20px; margin:6px 0 4px 0; }
+  .radio-group label{ display:inline-flex; align-items:center; gap:8px; font-size:0.98rem; cursor:pointer; }
+  .radio-group input[type=radio]{ width:19px; height:19px; cursor:pointer; }
+  .subnote{ font-size:0.82rem; color:var(--gris); margin:2px 0 10px 0; }
+  .attestation{
+    background:var(--bleu-clair); border:1px solid #bcd7ea; border-radius:10px; padding:16px;
+  }
+  .attestation label.chk{ font-weight:600; align-items:flex-start; }
+  .actions{
+    position:sticky; bottom:0; background:#fff; border-top:1px solid var(--bord); padding:14px 16px; display:flex; gap:12px; flex-wrap:wrap; justify-content:center; box-shadow:0 -2px 8px rgba(0,0,0,0.06);
+  }
+  .btn{
+    border:none; border-radius:9px; padding:13px 22px; font-size:1rem; font-weight:600; cursor:pointer;
+  }
+  .btn-primary{ background:var(--vert); color:#fff; }
+  .btn-secondary{ background:#eef2f5; color:#33404d; border:1px solid var(--bord); }
+  .btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  #msg{ max-width:900px; margin:0 auto; padding:0 16px; }
+  .alertbox{ background:#fdecea; border:1px solid #f2b8b5; color:var(--rouge); padding:12px 14px; border-radius:9px; margin:10px 0; font-size:0.92rem; }
+  .okbox{ background:#e8f5e9; border:1px solid #a8dab0; color:var(--vert); padding:12px 14px; border-radius:9px; margin:10px 0; font-size:0.92rem; }
+  footer{ text-align:center; color:var(--gris); font-size:0.8rem; padding:20px; }
+  @media print{
+    .actions, .intro-box, footer{ display:none !important; }
+    section.q-section{ break-inside:avoid; border:1px solid #999; }
+    body{ background:#fff; }
+  }
+</style>
+<script>window.CLE_CABINET = {"cle":{"kty":"RSA","n":"oK3WhYlzFFIqdes_zv1sli-SnKH5ZPjwJEBL--TuQDQoWmeEnIpVySjrGSCbJF9-NZd3a-ikmoMQdy_z5h2a6RDPv3FABy9THJTq2eBYHjr6j4p-8nfPwvBCM7GXeSytXzmLrkIOAd5G_mDAPhyMhUBciV6D3lvRNYBsmTcK6z2gWflQ1qrSn0_D_y1S-8vCDYsNO9zuFprKymUJT0YNQ8TdGppfZEqDtYmhhJnDPRsc6A2avlud6fattBJAehNHs7oU81PdykAOF9jQpS732AyEuWuWciD3lYpRlqDrdzdWqNwmfejmjrsd26jmgZ3NqsJRTiIFaS5euEMG-g_hHF8JXdtOk56yvJOlGURqIhUD75Cj3Lr5lLJats4MC_v-huw3uKYc8jxUYMYVJQacboB2gtd3u6aye1LFVrQKBMhTXImuA176uA5JhG0NFbXFF3-sxfTKMSSl9ayNcn1zJ00TCygZRVqsWOt82-vrwXQpfd1Qt4dHeoRN-gw_MQ59","e":"AQAB","alg":"RSA-OAEP-256","ext":true},"email":"docteur.nblanchard@gmail.com"};</script>
+</head>
+<body><div style="max-width:880px;margin:10px auto 0;padding:0 16px;font:14px -apple-system,Segoe UI,sans-serif"><a href="index.html" style="color:#1F4D3A">← Dr Nicolas Blanchard — accueil</a></div>
+
+<header>
+  <h1>Questionnaire médical avant consultation d'anesthésie</h1>
+  <p>Merci de répondre à toutes les questions qui vous concernent, le plus précisément possible. Ces informations sont
+  strictement confidentielles et sont utilisées uniquement par votre médecin anesthésiste pour préparer votre
+  intervention en toute sécurité. En cas de doute sur une question, laissez un commentaire dans le champ libre en fin
+  de questionnaire : votre médecin en rediscutera avec vous.</p>
+</header>
+
+<div class="wrap">
+  <div id="modeEmploi" class="intro-box">
+    <b>Comment utiliser ce questionnaire ?</b> Ce document fonctionne entièrement hors connexion, directement dans
+    votre navigateur : aucune information n'est envoyée sur internet pendant que vous le remplissez. Une fois
+    terminé, cliquez sur « Télécharger mon questionnaire » : un fichier sera créé sur votre appareil. Transmettez-le
+    ensuite à votre médecin anesthésiste par le moyen convenu avec le cabinet (messagerie sécurisée Médimail /
+    Mon espace santé, clé USB, ou remise sur place si vous êtes sur tablette au cabinet). Vous pouvez aussi imprimer
+    une version papier de vos réponses avec le bouton « Imprimer ».
+  </div>
+
+  <div id="msg"></div>
+
+  <!-- 1. IDENTITÉ / INTERVENTION -->
+  <section class="q-section">
+    <h2>1. Votre identité et l'intervention prévue</h2>
+    <div class="grid2">
+      <div class="field"><label for="q_nomNaissance">Nom de naissance <small>(tel qu'il figure sur votre pièce d'identité)</small></label><input type="text" id="q_nomNaissance" autocomplete="family-name"></div>
+      <div class="field"><label for="q_nom">Nom utilisé <small>(nom d'usage, s'il est différent)</small></label><input type="text" id="q_nom"></div>
+      <div class="field"><label for="q_prenomsNaissance">Prénom(s) de naissance <small>(tous, dans l'ordre de la pièce d'identité)</small></label><input type="text" id="q_prenomsNaissance"></div>
+      <div class="field"><label for="q_prenom">Prénom utilisé <small>(s'il est différent du premier prénom)</small></label><input type="text" id="q_prenom"></div>
+      <div class="field"><label for="q_naissance">Date de naissance</label><input type="date" id="q_naissance"></div>
+      <div class="field"><label for="q_lieuNaissance">Commune de naissance</label><input type="text" id="q_lieuNaissance"></div>
+      <div class="field"><label for="q_paysNaissance">Pays de naissance <small>(si vous êtes né(e) hors de France)</small></label><input type="text" id="q_paysNaissance"></div>
+      <div class="field">
+        <label>Sexe</label>
+        <div class="radio-group">
+          <label><input type="radio" name="q_sexe" value="F"> Féminin</label>
+          <label><input type="radio" name="q_sexe" value="M"> Masculin</label>
+        </div>
+      </div>
+      <div class="field"><label for="q_profession">Profession</label><input type="text" id="q_profession"></div>
+      <div class="field"><label for="q_taille">Taille (cm)</label><input type="number" id="q_taille" min="0" max="250"></div>
+      <div class="field"><label for="q_poids">Poids (kg)</label><input type="number" id="q_poids" min="0" max="400"></div>
+      <div class="field"><label for="q_sa">Si vous êtes enceinte : semaines d'aménorrhée</label><input type="text" id="q_sa" placeholder="ex : 24 SA"></div>
+      <div class="field"><label for="q_telephone">Téléphone</label><input type="text" id="q_telephone"></div>
+      <div class="field"><label for="q_email">Email</label><input type="email" id="q_email"></div>
+      <div class="field"><label for="q_emailMssante">Email MS-Santé (si vous en avez un)</label><input type="email" id="q_emailMssante"></div>
+      <div class="field">
+        <label for="q_nir">Numéro de sécurité sociale (NIR)</label>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <input type="text" id="q_nir" style="flex:1;" placeholder="15 chiffres" inputmode="numeric"
+            oninput="nirFieldInput(this)" onfocus="nirFieldFocus(this)" onblur="nirFieldBlur(this)">
+          <button type="button" class="btn" style="padding:6px 10px;" title="Afficher/masquer" onclick="nirToggleReveal('q_nir')">👁</button>
+        </div>
+        <p class="subnote" style="margin:2px 0 0;">Facultatif — il est masqué automatiquement dès que vous quittez ce champ (le bouton permet de le revérifier).</p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label for="q_intervention">Intervention prévue (si vous la connaissez)</label><input type="text" id="q_intervention"></div>
+      <div class="field"><label for="q_chirurgien">Chirurgien</label><input type="text" id="q_chirurgien"></div>
+      <div class="field"><label for="q_dateInterv">Date de l'intervention (si connue)</label><input type="date" id="q_dateInterv"></div>
+    </div>
+    <div class="field">
+      <label>Modalité prévue</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_parcours" value="hospit_conv"> Hospitalisation classique</label>
+        <label><input type="radio" name="q_parcours" value="ambulatoire"> Ambulatoire (entrée et sortie le même jour)</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. ANTÉCÉDENTS D'ANESTHÉSIE -->
+  <section class="q-section">
+    <h2>2. Vos antécédents d'anesthésie</h2>
+    <div class="field">
+      <label for="q_chirurgies">Interventions déjà subies (type et année approximative), une ligne par intervention</label>
+      <textarea id="q_chirurgies" placeholder="Exemple :&#10;Appendicectomie - 2015&#10;Prothèse de hanche droite - 2021"></textarea>
+    </div>
+    <div id="grp_anesth_simple"></div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_anesth_probleme"> J'ai déjà eu un problème lors d'une anesthésie (allergie, réveil difficile, nausées importantes...)</label>
+      <input type="text" class="prec" id="q_anesth_probleme_prec" placeholder="précisez...">
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_anesth_transfusion"> J'ai déjà été transfusé(e) (sang ou dérivés du sang)</label>
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_anesth_familial"> Un membre de ma famille proche a eu un problème grave lors d'une anesthésie</label>
+      <input type="text" class="prec" id="q_anesth_familial_prec" placeholder="précisez (qui, quel problème)...">
+    </div>
+  </section>
+
+  <!-- 3. TRAITEMENT -->
+  <section class="q-section">
+    <h2>3. Votre traitement habituel</h2>
+    <div class="field">
+      <label for="q_traitements">Médicaments pris régulièrement (nom et dose si possible), un médicament par ligne — vous pouvez aussi joindre une photo ou une copie de votre ordonnance à votre médecin par un autre moyen</label>
+      <textarea id="q_traitements" placeholder="Exemple :&#10;Kardégic 75mg - 1/jour&#10;Metformine 1000mg - matin et soir"></textarea>
+    </div>
+    <div class="field">
+      <label for="q_traitements_otc">Médicaments pris sans ordonnance (automédication, compléments, phytothérapie...)</label>
+      <textarea id="q_traitements_otc"></textarea>
+    </div>
+    <div class="field">
+      <label>Contraception (si applicable)</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_contraception" value=""> Aucune</label>
+        <label><input type="radio" name="q_contraception" value="orale"> Pilule</label>
+        <label><input type="radio" name="q_contraception" value="sterilet"> Stérilet</label>
+        <label><input type="radio" name="q_contraception" value="implant"> Implant</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. ALLERGIE -->
+  <section class="q-section">
+    <h2>4. Allergies et risque allergique</h2>
+    <p class="hint">Ces questions détaillées permettent de mieux orienter la prise en charge (elles reprennent les recommandations actuelles sur le risque allergique en anesthésie).</p>
+
+    <p class="field"><label>À rechercher en priorité</label></p>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_all_medicamentSuspecte"> On m'a déjà signalé une réaction (allergie) suspectée à un médicament ou produit pouvant être utilisé pendant une anesthésie</label>
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_all_reactionAncienneNonReevaluee"> J'ai une allergie ancienne connue à un médicament d'anesthésie (par exemple un curare), qui n'a pas été réévaluée récemment par un allergologue</label>
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_all_reactionInexpliquee"> J'ai eu une réaction inexpliquée lors d'une anesthésie précédente</label>
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_all_viandeMammifere"> J'ai déjà eu une réaction allergique à de la viande ou des abats de mammifère (bœuf, porc, agneau...)</label>
+    </div>
+
+    <p class="field" style="margin-top:14px;"><label>Latex</label></p>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_all_latexSignesCliniques"> J'ai déjà eu des signes évocateurs d'allergie au contact du latex (préservatif, ballon de baudruche, gants...)</label>
+    </div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_latexSpinaBifida"> J'ai un spina bifida</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_latexOperationsMultiples"> J'ai déjà eu plus de 5 opérations chirurgicales</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_latexMalformationUrologique"> J'ai une malformation urologique présente depuis la naissance</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_latexExpositionPro"> Je suis (ou j'ai été) exposé(e) au latex de façon répétée dans mon travail (soignant, industrie du caoutchouc...)</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_latexAllergieAlimentGroupe"> J'ai une allergie alimentaire au kiwi, à la banane, à l'avocat, à la papaye ou à la châtaigne</label></div>
+
+    <p class="field" style="margin-top:14px;"><label>Antibiotiques de la famille des pénicillines / céphalosporines</label></p>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_all_betalactaminesRapporte"> On m'a déjà signalé une allergie à la pénicilline ou à un antibiotique proche (céphalosporine)</label>
+    </div>
+    <div id="betalactaminesDetail" style="display:none; margin:6px 0 0 30px; padding:10px; background:#f7f9fb; border-radius:8px;">
+      <p class="subnote" style="margin-top:0;">Quelques précisions sur cette allergie, si vous les connaissez :</p>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_betalactaminesSigneGravite"> J'ai eu un signe de gravité (urticaire généralisée sur tout le corps, gonflement du visage/de la gorge, malaise brutal)</label></div>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_betalactaminesAtcdFamilial"> Cette allergie m'a été signalée uniquement parce qu'un membre de ma famille y est allergique (pas de réaction personnelle)</label></div>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_betalactaminesReprisSansReaction"> J'ai repris le même antibiotique depuis, sans aucun problème</label></div>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_betalactaminesCliniqueNonEvocatrice"> Les symptômes que j'ai eus étaient surtout digestifs (nausées, diarrhée) ou une mycose, sans autre signe</label></div>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_betalactaminesEruptionEnfanceAvant6ans"> C'était une simple éruption cutanée dans l'enfance, avant l'âge de 6 ans, sans signe de gravité</label></div>
+    </div>
+
+    <p class="field" style="margin-top:14px;"><label>Autres facteurs</label></p>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_pholcodineAnnee"> J'ai pris un sirop contre la toux contenant de la pholcodine au cours de l'année écoulée</label></div>
+    <p class="subnote" style="margin:2px 0 10px 30px;">Ces sirops ont été retirés du marché en France en 2022-2023 (ils exposent à un risque de réaction allergique grave lors d'une anesthésie), mais vous avez pu en prendre avant cette date, vous en procurer à l'étranger, ou en avoir un flacon entamé chez vous. Noms commerciaux à rechercher : Biocalyptol (et Biocalyptol sans sucre), Dimétane sans sucre, Pholcodine Biogaran, Broncalène Adultes ou Enfants, Hexapneumine Adultes ou Enfants, Atouxx (sirop ou gélules).</p>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_mastocytoseConnue"> J'ai une mastocytose connue</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_samaOuHatConnue"> J'ai un syndrome d'activation mastocytaire ou une alpha-tryptasémie héréditaire connu(e)</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_all_chlorhexidineSuspectee"> J'ai déjà eu une réaction suspectée à la chlorhexidine (antiseptique)</label></div>
+
+    <p class="field" style="margin-top:14px;"><label>Allergies alimentaires (à titre informatif)</label></p>
+    <div id="grp_all_alimentaire"></div>
+
+    <div class="field" style="margin-top:12px;">
+      <label for="q_all_commentaire">Autre précision sur vos allergies</label>
+      <textarea id="q_all_commentaire"></textarea>
+    </div>
+  </section>
+
+  <!-- 5. ADDICTIONS -->
+  <section class="q-section">
+    <h2>5. Tabac, alcool et autres substances</h2>
+    <div class="grid3">
+      <div class="field"><label for="q_tabac_cig">Cigarettes par jour (0 si vous ne fumez pas)</label><input type="number" id="q_tabac_cig" min="0" max="100"></div>
+      <div class="field"><label for="q_tabac_annees">Depuis combien d'années</label><input type="number" id="q_tabac_annees" min="0" max="90"></div>
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_tabac_autre"> Je fume/vapote aussi la pipe, le cigare, la cigarette électronique, ou j'utilise des patchs de nicotine</label>
+      <input type="text" class="prec" id="q_tabac_autre_prec" placeholder="précisez...">
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_alcool"> Je consomme de l'alcool régulièrement</label>
+      <input type="text" class="prec" id="q_alcool_prec" placeholder="quantité approximative par semaine...">
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_cannabis"> Je consomme du cannabis</label>
+    </div>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_autresdrogues"> Je consomme une autre substance (cocaïne, autre)</label>
+      <input type="text" class="prec" id="q_autresdrogues_prec" placeholder="précisez...">
+    </div>
+  </section>
+
+  <!-- 6. PROTHÈSES -->
+  <section class="q-section">
+    <h2>6. Prothèses et apparentés</h2>
+    <div id="grp_protheses"></div>
+  </section>
+
+  <!-- 7. DENTAIRE -->
+  <section class="q-section">
+    <h2>7. Problèmes dentaires</h2>
+    <p class="subnote">Cette information est importante pour la sécurité de l'endormissement.</p>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_dents_mobiles"> J'ai des dents qui bougent</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_dents_prothamovible"> J'ai une prothèse dentaire amovible (dentier)</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_dents_prothfixe"> J'ai des prothèses dentaires fixes (bridge, couronnes, implants)</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_dents_edente"> Je n'ai plus de dents (édenté(e))</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_dents_paradonto"> J'ai des problèmes de gencives (déchaussement, parodontite)</label></div>
+    <div class="field">
+      <label for="q_dents_autre">Autre précision (orthodontie, dent fragile, traumatisme dentaire, restauration en résine...)</label>
+      <textarea id="q_dents_autre"></textarea>
+    </div>
+  </section>
+
+  <!-- 8. CARDIAQUE -->
+  <section class="q-section">
+    <h2>8. Problèmes cardiaques</h2>
+    <div class="field">
+      <label>Combien d'étages pouvez-vous monter à pied, sans vous arrêter ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_capacite" value="0"> Aucun (je dois m'arrêter avant même 1 étage)</label>
+        <label><input type="radio" name="q_capacite" value="1-2"> 1 à 2 étages</label>
+        <label><input type="radio" name="q_capacite" value="plus"> Plus de 2 étages, sans difficulté</label>
+      </div>
+    </div>
+    <div id="grp_cardio"></div>
+  </section>
+
+  <!-- 9. RESPIRATOIRE -->
+  <section class="q-section">
+    <h2>9. Problèmes respiratoires</h2>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_ronflement"> Je ronfle</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_apnees"> On m'a déjà signalé des pauses respiratoires pendant mon sommeil (apnées)</label></div>
+    <div id="grp_respi"></div>
+    <div id="stopbangBlock" style="display:none; margin-top:8px; padding-top:10px; border-top:1px dashed var(--bord);">
+      <p class="subnote">Comme vous avez signalé un ronflement ou des pauses respiratoires, deux questions complémentaires (dépistage du syndrome d'apnées du sommeil) :</p>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_fatigue_diurne"> Fatigue ou somnolence fréquente dans la journée</label></div>
+      <div class="chk-row"><label class="chk"><input type="checkbox" id="q_tour_cou"> Mon tour de cou est large (col de chemise taille 43-44 ou plus)</label></div>
+    </div>
+  </section>
+
+  <!-- 10. HÉPATO-DIGESTIF -->
+  <section class="q-section">
+    <h2>10. Problèmes digestifs / hépatiques</h2>
+    <div id="grp_hepato"></div>
+  </section>
+
+  <!-- 11. URINAIRE / RÉNAL -->
+  <section class="q-section">
+    <h2>11. Problèmes urinaires ou rénaux</h2>
+    <div id="grp_renal"></div>
+  </section>
+
+  <!-- 12. GYNÉCOLOGIE -->
+  <section class="q-section">
+    <h2>12. Gynécologie (si applicable)</h2>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_enceinte"> Je suis enceinte, ou je pense pouvoir l'être</label></div>
+    <div class="grid3">
+      <div class="field"><label for="q_grossesses">Nombre de grossesses</label><input type="number" id="q_grossesses" min="0" max="20"></div>
+      <div class="field"><label for="q_enfants">Nombre d'enfants</label><input type="number" id="q_enfants" min="0" max="20"></div>
+    </div>
+    <div class="field"><label for="q_incident_accouchement">Incident lors d'un accouchement (hémorragie, anesthésie difficile...)</label><input type="text" id="q_incident_accouchement"></div>
+  </section>
+
+  <!-- 13. ENDOCRINIEN -->
+  <section class="q-section">
+    <h2>13. Problèmes hormonaux / métaboliques</h2>
+    <div id="grp_endoc"></div>
+  </section>
+
+  <!-- 14. NEURO-MUSCULAIRE -->
+  <section class="q-section">
+    <h2>14. Problèmes neurologiques</h2>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_avc"> J'ai déjà fait un accident vasculaire cérébral (AVC) ou un accident ischémique transitoire (AIT)</label>
+      <div class="field" style="margin:6px 0 0 30px; max-width:260px;">
+        <label for="q_avcdate">Date de cet AVC/AIT (si connue)</label>
+        <input type="date" id="q_avcdate">
+      </div>
+    </div>
+    <div id="grp_neuro"></div>
+  </section>
+
+  <!-- 15. SAIGNEMENT -->
+  <section class="q-section">
+    <h2>15. Problèmes de saignement</h2>
+    <div id="grp_saignement"></div>
+  </section>
+
+  <!-- 16. DIVERS -->
+  <section class="q-section">
+    <h2>16. Autres antécédents importants</h2>
+    <div class="chk-row">
+      <label class="chk"><input type="checkbox" id="q_cancer"> J'ai été traité(e) pour un cancer</label>
+      <input type="text" class="prec" id="q_cancer_prec" placeholder="lequel, quand...">
+    </div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_glaucome"> J'ai un glaucome</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_hgh"> J'ai déjà reçu un traitement par hormone de croissance ou par gonadotrophines (avant 1988)</label></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_cjd"> Un membre de ma famille a eu la maladie de Creutzfeldt-Jakob</label></div>
+  </section>
+
+  <!-- 17. FRAGILITÉ (patients de 75 ans et plus) -->
+  <section class="q-section" id="fragiliteSection" style="display:none;">
+    <h2>17. Questions complémentaires (patients de 75 ans et plus)</h2>
+    <p class="hint">Cette section apparaît automatiquement d'après votre date de naissance. Elle aide votre médecin à mieux évaluer votre autonomie avant l'intervention — elle sera toujours revue avec vous en consultation.</p>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_frag_aidant"> Ce questionnaire est rempli avec l'aide d'un proche ou d'un aidant</label></div>
+
+    <div class="field"><label>D'où venez-vous ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_provenance" value="0"> Domicile, sans aide</label>
+        <label><input type="radio" name="q_frag_provenance" value="1"> Domicile, avec aide professionnelle</label>
+        <label><input type="radio" name="q_frag_provenance" value="2"> Foyer logement ou EHPAD</label>
+      </div>
+    </div>
+    <div class="field"><label>Combien de médicaments différents prenez-vous régulièrement ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_medicaments" value="0"> 3 ou moins</label>
+        <label><input type="radio" name="q_frag_medicaments" value="1"> 4 à 5</label>
+        <label><input type="radio" name="q_frag_medicaments" value="2"> 6 ou plus</label>
+      </div>
+    </div>
+    <div class="field"><label>Comment décririez-vous votre humeur, en général ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_humeur" value="0"> Normale</label>
+        <label><input type="radio" name="q_frag_humeur" value="1"> Parfois anxieux(se) ou triste</label>
+        <label><input type="radio" name="q_frag_humeur" value="2"> Déprimé(e)</label>
+      </div>
+    </div>
+    <div class="field"><label>Par rapport aux personnes de votre âge, diriez-vous que votre santé est :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_perceptionSante" value="0"> Meilleure</label>
+        <label><input type="radio" name="q_frag_perceptionSante" value="1"> Équivalente</label>
+        <label><input type="radio" name="q_frag_perceptionSante" value="2"> Moins bonne</label>
+      </div>
+    </div>
+    <div class="field"><label>Avez-vous chuté au cours des 6 derniers mois ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_chute6mois" value="0"> Aucune chute</label>
+        <label><input type="radio" name="q_frag_chute6mois" value="1"> Une chute, sans gravité</label>
+        <label><input type="radio" name="q_frag_chute6mois" value="2"> Chute(s) répétée(s) ou grave(s)</label>
+      </div>
+    </div>
+    <div class="field"><label>Concernant votre alimentation, ces derniers temps :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_nutrition" value="0"> Poids stable, appétit normal</label>
+        <label><input type="radio" name="q_frag_nutrition" value="1"> Perte d'appétit nette depuis 15 jours, ou perte de poids récente (environ 3 kg en 3 mois)</label>
+        <label><input type="radio" name="q_frag_nutrition" value="2"> Dénutrition connue / avérée</label>
+      </div>
+    </div>
+    <div class="field"><label>Combien avez-vous de maladies suivies régulièrement (en dehors du motif de l'intervention) ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_maladiesAssociees" value="0"> Aucune</label>
+        <label><input type="radio" name="q_frag_maladiesAssociees" value="1"> 1 à 3</label>
+        <label><input type="radio" name="q_frag_maladiesAssociees" value="2"> Plus de 3</label>
+      </div>
+    </div>
+    <div class="field"><label>Pour les repas, le téléphone, la prise de vos médicaments, les déplacements/transports :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_aivq" value="0"> Je me débrouille seul(e)</label>
+        <label><input type="radio" name="q_frag_aivq" value="1"> J'ai besoin d'une aide partielle</label>
+        <label><input type="radio" name="q_frag_aivq" value="2"> Je ne peux pas le faire seul(e)</label>
+      </div>
+    </div>
+    <div class="field"><label>Pour vous lever et marcher :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_mobilite" value="0"> Je me débrouille seul(e)</label>
+        <label><input type="radio" name="q_frag_mobilite" value="1"> J'ai besoin d'un soutien (canne, aide d'une personne)</label>
+        <label><input type="radio" name="q_frag_mobilite" value="2"> Je ne peux pas me déplacer seul(e)</label>
+      </div>
+    </div>
+    <div class="field"><label>Concernant les fuites urinaires ou fécales :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_continence" value="0"> Aucune</label>
+        <label><input type="radio" name="q_frag_continence" value="1"> Fuites occasionnelles</label>
+        <label><input type="radio" name="q_frag_continence" value="2"> Fuites permanentes / protections en permanence</label>
+      </div>
+    </div>
+    <div class="field"><label>Pour manger vos repas :</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_priseRepas" value="0"> Je me débrouille seul(e)</label>
+        <label><input type="radio" name="q_frag_priseRepas" value="1"> J'ai besoin d'une aide ponctuelle</label>
+        <label><input type="radio" name="q_frag_priseRepas" value="2"> J'ai besoin d'une aide complète</label>
+      </div>
+    </div>
+    <div class="field"><label>Avez-vous, ou vos proches ont-ils, remarqué récemment des troubles de la mémoire ou de l'orientation ?</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_frag_fonctionsCognitives" value="0"> Non, rien de particulier</label>
+        <label><input type="radio" name="q_frag_fonctionsCognitives" value="1"> Un peu, de petits oublis</label>
+        <label><input type="radio" name="q_frag_fonctionsCognitives" value="2"> Oui, des troubles marqués (confusion, désorientation...)</label>
+      </div>
+    </div>
+    <div class="field"><label>Quelle phrase décrit le mieux votre niveau d'activité habituel ?</label>
+      <div class="radio-group" style="flex-direction:column; gap:8px;">
+        <label><input type="radio" name="q_frag_oms" value="0"> Je suis pleinement actif(ve), comme avant tout problème de santé</label>
+        <label><input type="radio" name="q_frag_oms" value="1"> Activité physique intense limitée, mais je me débrouille pour les tâches légères</label>
+        <label><input type="radio" name="q_frag_oms" value="2"> Je me débrouille seul(e) au quotidien mais incapable de travailler, debout/actif(ve) plus de la moitié du temps éveillé</label>
+        <label><input type="radio" name="q_frag_oms" value="3"> Capable seulement de petits soins personnels, alité(e)/assis(e) plus de la moitié du temps éveillé</label>
+        <label><input type="radio" name="q_frag_oms" value="4"> Totalement dépendant(e), alité(e) ou au fauteuil en permanence</label>
+      </div>
+    </div>
+  </section>
+
+  <!-- 18. BLOC PÉDIATRIQUE (patient mineur) -->
+  <section class="q-section" id="pediatrieSection" style="display:none;">
+    <h2>18. Questions complémentaires (patient mineur)</h2>
+    <p class="hint">Cette section apparaît automatiquement d'après la date de naissance renseignée. Merci de la remplir en tant que parent ou représentant légal, en répondant pour l'enfant (ou pour vous-même/la fratrie si la question le précise).</p>
+    <div id="grp_pedsaign"></div>
+    <div class="chk-row"><label class="chk"><input type="checkbox" id="q_ped_marche"> L'enfant ne marche pas encore (nourrisson / tout-petit)</label></div>
+    <div id="pedSaosBlock" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--bord);">
+      <p class="subnote">L'intervention prévue évoquant une amygdalectomie ou une adénoïdectomie, quelques questions sur le sommeil de l'enfant :</p>
+      <p class="field"><label>La nuit, avez-vous déjà remarqué (cochez tout ce qui s'applique) :</label></p>
+      <div id="grp_ped_saos_nuit"></div>
+      <p class="field" style="margin-top:10px;"><label>Le jour, avez-vous déjà remarqué :</label></p>
+      <div id="grp_ped_saos_jour"></div>
+    </div>
+  </section>
+
+  <!-- 19. LIBRE -->
+  <section class="q-section">
+    <h2>19. Avez-vous oublié de signaler quelque chose d'important ?</h2>
+    <div class="field">
+      <textarea id="q_libre" style="min-height:90px;"></textarea>
+    </div>
+  </section>
+
+  <!-- 18. ATTESTATION -->
+  <section class="q-section attestation">
+    <h2 style="color:#1c2733; border:none; padding:0;">Attestation</h2>
+    <label class="chk">
+      <input type="checkbox" id="q_attestation">
+      Je certifie avoir répondu avec sincérité à l'ensemble de ces questions et avoir coché tous les éléments qui me
+      concernent, à la date indiquée ci-dessous.
+    </label>
+    <div class="grid2" style="margin-top:12px;">
+      <div class="field"><label for="q_signature">Nom et prénom (tient lieu de signature)</label><input type="text" id="q_signature"></div>
+      <div class="field"><label for="q_dateSignature">Date</label><input type="date" id="q_dateSignature"></div>
+    </div>
+  </section>
+</div>
+
+<div class="actions">
+  <button class="btn btn-secondary" id="btnPrint">Imprimer / enregistrer en PDF</button>
+  <button class="btn btn-primary" id="btnEnvoyer" style="display:none;">Envoyer au cabinet (chiffré)</button>
+  <button class="btn btn-primary" id="btnFichierChiffre" style="display:none;">Créer mon fichier chiffré pour le cabinet</button>
+  <button class="btn btn-primary" id="btnDownload">Télécharger mon questionnaire</button>
+</div>
+
+<footer>Questionnaire numérique — usage strictement médical — aucune donnée n'est transmise automatiquement sur internet.</footer>
+
+<script>
+/* ============================================================
+   Questionnaire patient numérique — construit le 20/08/2026 à partir
+   du modèle papier "Questionnaire médical CPA4" du Dr Blanchard.
+   Produit un fichier JSON dont la forme est un SOUS-ENSEMBLE de
+   emptyData() (app_anesthesie_v2.html / part_data.js), destiné à être
+   fusionné sur un emptyData() frais par l'import "Questionnaire
+   patient" (voie 2) de la consultation.
+   100% hors-ligne : aucune requête réseau n'est faite par cette page.
+   ============================================================ */
+
+/* ---- Groupes de cases à cocher "compilées" en texte libre ---- */
+/* Chaque item : [clé, libellé, précision?] */
+const ANESTH_SIMPLE_ITEMS = [
+  ["ag","J'ai déjà eu une anesthésie générale"],
+  ["rachiperi","J'ai déjà eu une rachianesthésie ou une péridurale"],
+  ["alr","J'ai déjà eu une anesthésie locorégionale (bras, jambe...)"],
+];
+const PROTHESES_ITEMS = [
+  ["prothArticulaire","Prothèse articulaire (hanche, genou, épaule...)"],
+  ["lentilles","Lentilles de contact"],
+  ["prothMembre","Prothèse de membre"],
+  ["prothCapillaire","Prothèse capillaire (perruque)"],
+  ["piercing","Piercing"],
+  ["prothOngles","Prothèses unguéales (faux ongles)"],
+  ["appareilAuditifDroit","Appareil auditif droit"],
+  ["appareilAuditifGauche","Appareil auditif gauche"],
+];
+const CARDIO_ITEMS = [
+  ["essoufflement","Essoufflement à l'effort"],
+  ["palpitations","Palpitations"],
+  ["pacemaker","Pacemaker ou défibrillateur implantable"],
+  ["malaise","Malaise ou perte de connaissance"],
+  ["souffle","Souffle cardiaque connu"],
+  ["hta","Hypertension artérielle"],
+  ["ic","Insuffisance cardiaque / œdème pulmonaire (OAP)"],
+  ["angor","Angine de poitrine (angor)"],
+  ["idm","Infarctus du myocarde"],
+  ["stent","Stent coronaire, pontage ou angioplastie"],
+  ["varices","Varices"],
+  ["phlebite","Phlébite"],
+  ["ep","Embolie pulmonaire"],
+];
+const RESPI_ITEMS = [
+  ["asthme","Asthme"],
+  ["bpco","Bronchite chronique / BPCO / emphysème"],
+  ["tuberculose","Antécédent de tuberculose"],
+  ["o2domicile","Oxygène à domicile"],
+];
+const HEPATO_ITEMS = [
+  ["ulcere","Ulcère de l'estomac"],
+  ["rgo","Reflux gastro-œsophagien / hernie hiatale"],
+  ["hepatite","Hépatite",true],
+];
+const RENAL_ITEMS = [
+  ["infectionsuri","Infections urinaires à répétition"],
+  ["insuffrenale","Insuffisance rénale"],
+  ["coliques","Coliques néphrétiques (calculs rénaux)"],
+  ["prostate","Hypertrophie de la prostate"],
+];
+const ENDOC_ITEMS = [
+  ["diabete","Diabète"],
+  ["cholesterol","Cholestérol ou triglycérides élevés"],
+  ["thyroide","Problème de thyroïde"],
+];
+const NEURO_ITEMS = [
+  ["depression","Dépression"],
+  ["epilepsie","Épilepsie"],
+  ["migraines","Migraines"],
+  ["parkinson","Maladie de Parkinson"],
+  ["myopathie","Myopathie"],
+  ["myasthenie","Myasthénie"],
+  ["memoire","Troubles de la mémoire ou de l'attention"],
+];
+const SAIGNEMENT_ITEMS = [
+  ["facile","Je saigne facilement (nez, gencives, petites coupures)"],
+  ["anormal","Saignement anormal après une extraction dentaire ou une intervention"],
+  ["hospit","Hospitalisation pour un saignement"],
+  ["familial","Antécédent familial de maladie de la coagulation (hémophilie, Willebrand...)"],
+];
+const ALIMENTAIRE_ITEMS = [
+  ["oeuf","Œuf"],
+  ["soja","Soja"],
+  ["poisson","Poisson"],
+  ["crustaces","Crustacés"],
+  ["sulfites","Sulfites ingérés (vin, fruits secs...)"],
+];
+/* Questions q1-q9 reprises TELLES QUELLES du moteur de règles pédiatrique
+   (part_data.js, PEDIATRIE_SAIGNEMENT_QUESTIONS) — déjà formulées pour être
+   répondues par l'enfant, un parent ou la fratrie, donc directement utilisables
+   dans ce questionnaire sans reformulation. */
+const PED_SAIGNEMENT_ITEMS = [
+  ["q1","Saignement de plus de 24h, voire transfusion, après un traumatisme ou un acte chirurgical mineur (circoncision, suture) — chez l'enfant, un parent ou la fratrie"],
+  ["q2","Saignement de plus de 12h après la section du cordon ombilical (carnet de santé) — chez l'enfant, un parent ou la fratrie"],
+  ["q3","Saignement dans la nuit voire au bout de 24h après une extraction dentaire — chez l'enfant, un parent ou la fratrie"],
+  ["q4","Une ou plusieurs hématuries spontanées — chez l'enfant, un parent ou la fratrie"],
+  ["q5","Ecchymoses (bleus) fréquentes sans cause apparente"],
+  ["q6","Saignement de nez ayant nécessité un traitement chirurgical"],
+  ["q7","Extraction dentaire ayant nécessité une suture chirurgicale"],
+  ["q8","Saignement de plus de 15 minutes après une prise de sang"],
+  ["q9","Tendance au saignement continu"],
+];
+const PED_SAOS_NUIT_ITEMS = [
+  "Ronflement fréquent (plus de 3 nuits par semaine)",
+  "Pauses respiratoires, apnées avec reprise inspiratoire bruyante",
+  "Sueurs",
+  "Énurésie (pipi au lit)",
+  "Sommeil agité",
+  "Position anormale pendant le sommeil (tête en hyperextension)",
+  "Cyanose (coloration bleutée)",
+  "Réveils fréquents",
+  "Parasomnie (somnambulisme, grincement des dents, terreurs nocturnes, cauchemars)",
+];
+const PED_SAOS_JOUR_ITEMS = [
+  "Difficultés de réveil",
+  "Irritabilité au réveil",
+  "Fatigue au réveil, somnolence dans la journée, siestes longues (après 7 ans)",
+  "Maux de tête le matin, cernes, ou vomissements",
+  "Manque d'appétit au petit-déjeuner",
+  "Respiration par la bouche",
+  "Hyperactivité, troubles de l'attention ou de la mémoire",
+  "Prise de poids ou retentissement sur la croissance",
+];
+/* Regex reprise du moteur (part_output.js) pour détecter une amygdalectomie/
+   adénoïdectomie à partir du texte libre de l'intervention. */
+const PED_AMYGDAL_RE = /amygdal|adeno.?dect|v[ée]g[ée]tations? ad[ée]no|adenoidect/i;
+
+function renderCheckGroup(containerId, items, prefix){
+  const el = document.getElementById(containerId);
+  el.innerHTML = items.map(function(it){
+    const key = it[0], label = it[1], prec = it[2];
+    let html = '<div class="chk-row"><label class="chk"><input type="checkbox" id="'+prefix+'_'+key+'"> '+label+'</label>';
+    if(prec){ html += '<input type="text" class="prec" id="'+prefix+'_'+key+'_prec" placeholder="précisez...">'; }
+    html += '</div>';
+    return html;
+  }).join("");
+}
+function collectCheckGroup(items, prefix){
+  const out = [];
+  items.forEach(function(it){
+    const key = it[0], label = it[1], prec = it[2];
+    const cb = document.getElementById(prefix+'_'+key);
+    if(cb && cb.checked){
+      let txt = label;
+      if(prec){
+        const p = document.getElementById(prefix+'_'+key+'_prec');
+        if(p && p.value.trim()) txt += ' ('+p.value.trim()+')';
+      }
+      out.push(txt);
+    }
+  });
+  return out.join('; ');
+}
+
+/* Variante pour les groupes dont la cible est un TABLEAU de libellés exacts
+   (ex. pediatrie.saos.nocturnes/diurnes) plutôt qu'un texte compilé. */
+function renderPlainCheckGroup(containerId, labels, prefix){
+  const el = document.getElementById(containerId);
+  el.innerHTML = labels.map(function(label, i){
+    return '<div class="chk-row"><label class="chk"><input type="checkbox" id="'+prefix+'_'+i+'"> '+label+'</label></div>';
+  }).join("");
+}
+function collectPlainCheckGroup(labels, prefix){
+  const out = [];
+  labels.forEach(function(label, i){
+    const cb = document.getElementById(prefix+'_'+i);
+    if(cb && cb.checked) out.push(label);
+  });
+  return out;
+}
+
+/* Âge en années révolues à une date de référence (aujourd'hui par défaut) —
+   même logique que calcAgeFromDOB (part_engine.js) côté application principale. */
+function calcAge(dobStr, refDate){
+  if(!dobStr) return null;
+  const dob = new Date(dobStr);
+  if(isNaN(dob.getTime())) return null;
+  const ref = refDate || new Date();
+  let age = ref.getFullYear() - dob.getFullYear();
+  const m = ref.getMonth() - dob.getMonth();
+  if(m < 0 || (m === 0 && ref.getDate() < dob.getDate())) age--;
+  return age;
+}
+
+/* Affiche/masque les sections dont la pertinence dépend de l'âge (fragilité
+   ≥75 ans, bloc pédiatrique <18 ans) — recalculé à chaque saisie de la date
+   de naissance, comme le fait l'application principale (part_output.js /
+   part_sections.js) avec les mêmes seuils. */
+function updateAgeDependentSections(){
+  const age = calcAge(val('q_naissance'));
+  document.getElementById('fragiliteSection').style.display = (age!=null && age>=75) ? 'block' : 'none';
+  document.getElementById('pediatrieSection').style.display = (age!=null && age<18) ? 'block' : 'none';
+}
+function updateStopbangVisibility(){
+  const show = checked('q_ronflement') || checked('q_apnees');
+  document.getElementById('stopbangBlock').style.display = show ? 'block' : 'none';
+}
+function updateBetalactaminesVisibility(){
+  document.getElementById('betalactaminesDetail').style.display = checked('q_all_betalactaminesRapporte') ? 'block' : 'none';
+}
+function updatePedSaosVisibility(){
+  const show = PED_AMYGDAL_RE.test(val('q_intervention'));
+  document.getElementById('pedSaosBlock').style.display = show ? 'block' : 'none';
+}
+
+function init(){
+  renderCheckGroup('grp_anesth_simple', ANESTH_SIMPLE_ITEMS, 'anesth');
+  renderCheckGroup('grp_protheses', PROTHESES_ITEMS, 'proth');
+  renderCheckGroup('grp_cardio', CARDIO_ITEMS, 'cardio');
+  renderCheckGroup('grp_respi', RESPI_ITEMS, 'respi');
+  renderCheckGroup('grp_hepato', HEPATO_ITEMS, 'hepato');
+  renderCheckGroup('grp_renal', RENAL_ITEMS, 'renal');
+  renderCheckGroup('grp_endoc', ENDOC_ITEMS, 'endoc');
+  renderCheckGroup('grp_neuro', NEURO_ITEMS, 'neuro');
+  renderCheckGroup('grp_saignement', SAIGNEMENT_ITEMS, 'saign');
+  renderCheckGroup('grp_all_alimentaire', ALIMENTAIRE_ITEMS, 'all');
+  renderCheckGroup('grp_pedsaign', PED_SAIGNEMENT_ITEMS, 'ped');
+  renderPlainCheckGroup('grp_ped_saos_nuit', PED_SAOS_NUIT_ITEMS, 'pedsaosnuit');
+  renderPlainCheckGroup('grp_ped_saos_jour', PED_SAOS_JOUR_ITEMS, 'pedsaosjour');
+
+  // Sections/blocs dont l'affichage dépend d'une autre réponse (âge, ronflement/apnées,
+  // allergie aux bêtalactamines, texte de l'intervention) — recalculés à la volée.
+  document.getElementById('q_naissance').addEventListener('input', updateAgeDependentSections);
+  document.getElementById('q_ronflement').addEventListener('change', updateStopbangVisibility);
+  document.getElementById('q_apnees').addEventListener('change', updateStopbangVisibility);
+  document.getElementById('q_all_betalactaminesRapporte').addEventListener('change', updateBetalactaminesVisibility);
+  document.getElementById('q_intervention').addEventListener('input', updatePedSaosVisibility);
+  updateAgeDependentSections();
+  updateStopbangVisibility();
+  updateBetalactaminesVisibility();
+  updatePedSaosVisibility();
+
+  // Date de signature = aujourd'hui par défaut
+  const dS = document.getElementById('q_dateSignature');
+  const today = new Date();
+  dS.value = today.toISOString().slice(0,10);
+}
+
+function parseListLines(text){
+  return (text||"").split("\n").map(function(s){return s.trim();}).filter(function(s){return s.length>0;});
+}
+function val(id){ const e=document.getElementById(id); return e ? e.value.trim() : ""; }
+function checked(id){ const e=document.getElementById(id); return !!(e && e.checked); }
+/* ---------- Masquage du NIR (numéro de sécurité sociale) ----------
+   Donnée particulièrement sensible (retour du médecin, 21/08/2026) : affiché en clair pendant la
+   saisie active, masqué dès que le champ perd le focus (seuls le 1er chiffre et les 3 derniers restent
+   visibles). La vraie valeur est conservée dans data-real ; c'est elle que lit nirVal() ci-dessous,
+   jamais la valeur affichée (masquée) du champ — sinon le JSON exporté contiendrait des X. */
+function nirDisplayMasked(raw){
+  const digits = (raw||"").replace(/\s+/g,"");
+  if(digits.length<=4) return digits;
+  const first = digits[0];
+  const last3 = digits.slice(-3);
+  const middle = digits.slice(1,-3).replace(/./g,"X");
+  const middleGrouped = middle.replace(/(.{2})/g,"$1 ").trim();
+  return [first, middleGrouped, last3].filter(Boolean).join(" ");
+}
+function nirFieldInput(el){ el.dataset.real = el.value; }
+function nirFieldFocus(el){ el.dataset.revealed = "1"; if(el.dataset.real) el.value = el.dataset.real; }
+function nirFieldBlur(el){
+  el.dataset.real = el.value.replace(/\s+/g,"");
+  el.dataset.revealed = "0";
+  el.value = nirDisplayMasked(el.dataset.real);
+}
+function nirToggleReveal(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  if(el.dataset.revealed==="1"){ el.dataset.revealed="0"; el.value = nirDisplayMasked(el.dataset.real||""); }
+  else{ el.dataset.revealed="1"; el.value = el.dataset.real||""; }
+}
+function nirVal(id){
+  const e = document.getElementById(id);
+  if(!e) return "";
+  return (e.dataset.real!==undefined ? e.dataset.real : e.value).replace(/\s+/g,"");
+}
+function radioVal(name){
+  const els = document.getElementsByName(name);
+  for(let i=0;i<els.length;i++){ if(els[i].checked) return els[i].value; }
+  return "";
+}
+function numOrNull(id){
+  const v = val(id);
+  if(v==="") return null;
+  const n = Number(v);
+  return isNaN(n) ? null : n;
+}
+
+/* ---- Construction de l'objet JSON (sous-ensemble de emptyData()) ---- */
+function buildData(){
+  const traitementsLines = parseListLines(val('q_traitements'));
+  const traitementsOtcLines = parseListLines(val('q_traitements_otc')).map(function(l){ return l + " (sans ordonnance)"; });
+  const traitements = traitementsLines.concat(traitementsOtcLines).map(function(nom){ return {nom:nom}; });
+
+  const chirurgicaux = parseListLines(val('q_chirurgies')).join("; ");
+
+  const anesthesiquesPersoParts = [];
+  const anesthSimple = collectCheckGroup(ANESTH_SIMPLE_ITEMS, 'anesth');
+  if(anesthSimple) anesthesiquesPersoParts.push(anesthSimple);
+  if(checked('q_anesth_probleme')){
+    const p = val('q_anesth_probleme_prec');
+    anesthesiquesPersoParts.push("Problème lors d'une anesthésie" + (p ? " (" + p + ")" : ""));
+  }
+  if(checked('q_anesth_transfusion')) anesthesiquesPersoParts.push("Antécédent de transfusion");
+
+  let anesthesiquesFamiliaux = "";
+  if(checked('q_anesth_familial')){
+    const p = val('q_anesth_familial_prec');
+    anesthesiquesFamiliaux = "Problème familial d'anesthésie" + (p ? " (" + p + ")" : "");
+  }
+
+  const cigJour = numOrNull('q_tabac_cig');
+  const tabacAutreTxt = checked('q_tabac_autre') ? (val('q_tabac_autre_prec') || "pipe/vapote/patch signalé(e)") : "";
+  const tabacStatut = (cigJour && cigJour>0) || checked('q_tabac_autre') ? "actif" : "non";
+
+  const alcoolStatut = checked('q_alcool') ? "modere" : "abstinent";
+  const alcoolCommentaire = checked('q_alcool') ? (val('q_alcool_prec') || "Consommation régulière déclarée par le patient") : "";
+
+  const capaciteVal = radioVal('q_capacite');
+  const capaciteMET = capaciteVal === "0" ? "lt4" : (capaciteVal ? "ge4" : "");
+
+  const neuroParts = [];
+  const neuroCompiled = collectCheckGroup(NEURO_ITEMS, 'neuro');
+  if(neuroCompiled) neuroParts.push(neuroCompiled);
+  let avcDate = "";
+  if(checked('q_avc')){
+    avcDate = val('q_avcdate');
+    neuroParts.push("Antécédent d'AVC/AIT" + (avcDate ? " du " + avcDate : ""));
+  }
+
+  const oncologieParts = [];
+  if(checked('q_cancer')){ const p = val('q_cancer_prec'); oncologieParts.push("Antécédent de cancer traité"+(p?" : "+p:"")); }
+
+  const gynecoParts = [];
+  const grossesses = numOrNull('q_grossesses');
+  const enfants = numOrNull('q_enfants');
+  if(grossesses!=null) gynecoParts.push(grossesses+" grossesse(s)");
+  if(enfants!=null) gynecoParts.push(enfants+" enfant(s)");
+  const incidentAccouchement = val('q_incident_accouchement');
+  if(incidentAccouchement) gynecoParts.push("Incident lors d'un accouchement : "+incidentAccouchement);
+
+  const commentaireParts = [];
+  const dentsAutre = val('q_dents_autre');
+  if(dentsAutre) commentaireParts.push("Dentaire : " + dentsAutre);
+  if(checked('q_glaucome')) commentaireParts.push("Glaucome signalé par le patient");
+  const libre = val('q_libre');
+  if(libre) commentaireParts.push(libre);
+
+  const data = {
+    identity: {
+      // Identitovigilance (RNIV, 04/10/2026) : traits stricts recueillis séparément des traits d'usage.
+      nomNaissance: val('q_nomNaissance'),
+      nomUsage: val('q_nom') || val('q_nomNaissance'),
+      prenomsNaissance: val('q_prenomsNaissance'),
+      prenom: val('q_prenom') || (val('q_prenomsNaissance').split(/[ ,]+/)[0] || ''),
+      lieuNaissance: val('q_lieuNaissance'),
+      paysNaissance: val('q_paysNaissance'),
+      dateNaissance: val('q_naissance'),
+      sexe: radioVal('q_sexe'),
+      profession: val('q_profession'),
+      semainesAmenorrhee: val('q_sa'),
+      telephone: val('q_telephone'),
+      email: val('q_email'),
+      emailMssante: val('q_emailMssante'),
+      nir: nirVal('q_nir'),
+      chirurgienDemandeur: val('q_chirurgien'),
+    },
+    intervention: {
+      type: val('q_intervention'),
+      dateIntervention: val('q_dateInterv'),
+      parcours: radioVal('q_parcours') || "hospit_conv",
+    },
+    antecedents: {
+      medicaux: {
+        cardio: collectCheckGroup(CARDIO_ITEMS, 'cardio'),
+        respi: collectCheckGroup(RESPI_ITEMS, 'respi'),
+        neuro: neuroParts.join("; "),
+        metaboliqueEndocrino: collectCheckGroup(ENDOC_ITEMS, 'endoc'),
+        renalUro: collectCheckGroup(RENAL_ITEMS, 'renal'),
+        hepatique: collectCheckGroup(HEPATO_ITEMS, 'hepato'),
+        hematoCoag: collectCheckGroup(SAIGNEMENT_ITEMS, 'saign'),
+        oncologie: oncologieParts.join("; "),
+        gyneco: gynecoParts.join("; "),
+      },
+      chirurgicaux: chirurgicaux,
+      anesthesiquesPerso: anesthesiquesPersoParts.join("; "),
+      anesthesiquesFamiliaux: anesthesiquesFamiliaux,
+      patienteEnceinte: checked('q_enceinte'),
+      contraception: radioVal('q_contraception') || "",
+      avcDate: avcDate,
+      risquePrion: {
+        hormoneCroissance: checked('q_hgh'),
+        familialCJD: checked('q_cjd'),
+      },
+    },
+    allergie: (function(){
+      const a = {};
+      ["medicamentSuspecte","reactionAncienneNonReevaluee","reactionInexpliquee","viandeMammifere",
+       "latexSignesCliniques","latexSpinaBifida","latexOperationsMultiples","latexMalformationUrologique","latexExpositionPro","latexAllergieAlimentGroupe",
+       "betalactaminesRapporte","betalactaminesSigneGravite","betalactaminesAtcdFamilial","betalactaminesReprisSansReaction","betalactaminesCliniqueNonEvocatrice","betalactaminesEruptionEnfanceAvant6ans",
+       "pholcodineAnnee","mastocytoseConnue","samaOuHatConnue","chlorhexidineSuspectee"].forEach(function(key){ a[key] = checked('q_all_'+key); });
+      ALIMENTAIRE_ITEMS.forEach(function(it){ a['alimentaire'+it[0].charAt(0).toUpperCase()+it[0].slice(1)] = checked('all_'+it[0]); });
+      a.commentaire = val('q_all_commentaire');
+      return a;
+    })(),
+    stopbang: {
+      snoring: checked('q_ronflement'),
+      tiredness: checked('q_fatigue_diurne'),
+      observedApnea: checked('q_apnees'),
+      pressure: checked('cardio_hta'),
+      neckOver40: checked('q_tour_cou'),
+    },
+    scores: {
+      capaciteFonctionnelleMET: capaciteMET,
+    },
+    habitudes: {
+      tabac: { statut: tabacStatut, cigarettesJour: cigJour, ancienneteAns: numOrNull('q_tabac_annees'), commentaire: tabacAutreTxt },
+      alcool: { statut: alcoolStatut, commentaire: alcoolCommentaire },
+      substances: { cannabis: checked('q_cannabis'), autres: checked('q_autresdrogues') ? (val('q_autresdrogues_prec') || "autre substance signalée") : "", aucune: !checked('q_cannabis') && !checked('q_autresdrogues') },
+    },
+    protheses: (function(){
+      const p = {};
+      PROTHESES_ITEMS.forEach(function(it){ p[it[0]] = checked('proth_'+it[0]); });
+      return p;
+    })(),
+    traitements: traitements,
+    examenClinique: {
+      vitaux: { taille: numOrNull('q_taille'), poids: numOrNull('q_poids') },
+      vas: {
+        ronflementSAOS: checked('q_ronflement') || checked('q_apnees'),
+        // Dentition (refonte 25/08/2026, cf. FIELDS_DENTITION dans part_ui.js) : le patient ne peut
+        // pas préciser lui-même haut/bas/partielle/complète pour ses prothèses — signalé en texte
+        // libre dans "precision" plutôt que dans le tableau structuré, à charge pour le médecin de
+        // compléter le tableau lors de l'examen clinique. "Je n'ai plus de dents" = édentation
+        // complète (édentation partielle non demandée au patient, jugement clinique du médecin).
+        dentition: {
+          mobiles: checked('q_dents_mobiles'),
+          edenteComplet: checked('q_dents_edente'),
+          parodontopathie: checked('q_dents_paradonto'),
+          precision: [
+            checked('q_dents_prothamovible') ? "prothèse dentaire amovible signalée par le patient (haut/bas à préciser)" : null,
+            checked('q_dents_prothfixe') ? "prothèse(s) dentaire(s) fixe(s) signalée(s) par le patient (bridge/couronnes/implants, à préciser)" : null,
+          ].filter(Boolean).join(" ; "),
+        },
+      },
+    },
+    commentaire: commentaireParts.join("\n"),
+    _questionnairePatient: {
+      version: 1,
+      rempliLe: new Date().toISOString(),
+      attestation: checked('q_attestation'),
+      dateSignature: val('q_dateSignature'),
+      nomSignature: val('q_signature'),
+    },
+  };
+
+  // Sexe : ne pas écraser la valeur par défaut du modèle si la question n'a pas été
+  // répondue (le radio-group ne renvoie alors qu'une chaîne vide).
+  if(!data.identity.sexe) delete data.identity.sexe;
+
+  const age = calcAge(val('q_naissance'));
+
+  // Grille de fragilité (SEGA) : uniquement pertinente à partir de 75 ans (même seuil
+  // que l'application principale) — on n'inclut la clé que si la section était affichée,
+  // pour ne jamais écraser les valeurs par défaut chez un patient plus jeune.
+  if(age!=null && age>=75){
+    const frag = {};
+    frag.age = age>=85 ? "2" : "1";
+    ["provenance","medicaments","humeur","perceptionSante","chute6mois","nutrition","maladiesAssociees","aivq","mobilite","continence","priseRepas","fonctionsCognitives"].forEach(function(key){
+      frag[key] = radioVal('q_frag_'+key);
+    });
+    frag.omsPerformanceStatus = radioVal('q_frag_oms');
+    data.fragilite = frag;
+    if(checked('q_frag_aidant')){
+      data.commentaire = (data.commentaire ? data.commentaire+"\n" : "") + "Questionnaire (dont la grille de fragilité) rempli avec l'aide d'un proche/aidant.";
+    }
+  }
+
+  // Bloc pédiatrique : uniquement pertinent avant 18 ans (même seuil que l'application
+  // principale) — questions q1-q9 reprises telles quelles du moteur de règles.
+  if(age!=null && age<18){
+    const saignement = { marcheNonAcquise: checked('q_ped_marche') };
+    PED_SAIGNEMENT_ITEMS.forEach(function(it){ saignement[it[0]] = checked('ped_'+it[0]); });
+    data.pediatrie = {
+      saignement: saignement,
+      saos: {
+        nocturnes: collectPlainCheckGroup(PED_SAOS_NUIT_ITEMS, 'pedsaosnuit'),
+        diurnes: collectPlainCheckGroup(PED_SAOS_JOUR_ITEMS, 'pedsaosjour'),
+      },
+    };
+  }
+
+  return data;
+}
+
+function showMsg(html, cls){
+  document.getElementById('msg').innerHTML = '<div class="'+cls+'">'+html+'</div>';
+}
+
+function validateBeforeDownload(){
+  const missing = [];
+  if(!val('q_nomNaissance')) missing.push("nom de naissance");
+  if(!val('q_prenomsNaissance')) missing.push("prénom(s) de naissance");
+  if(!val('q_naissance')) missing.push("date de naissance");
+  if(!radioVal('q_sexe')) missing.push("sexe");
+  if(!val('q_lieuNaissance') && !val('q_paysNaissance')) missing.push("commune (ou pays) de naissance");
+  if(!checked('q_attestation')) missing.push("case d'attestation cochée");
+  if(!val('q_signature')) missing.push("nom en signature");
+  return missing;
+}
+
+/* Envoi chiffré au cabinet (04/10/2026) : uniquement quand la page est ouverte depuis le lien personnel
+   reçu par e-mail (le site du cabinet fournit alors window.DEPOT_CABINET : adresse d'envoi, jeton du
+   rendez-vous, clé PUBLIQUE du cabinet). Les réponses sont chiffrées ICI, sur l'appareil du patient
+   (AES-GCM 256 bits, clé elle-même chiffrée en RSA-OAEP/SHA-256) : le site ne reçoit qu'un bloc illisible,
+   que seul le poste du médecin (ANESTHconsult, clé privée) peut déchiffrer. Même format que
+   chiffrerPourCabinet() de la passerelle (~/Desktop/Files/4 - Outils et tests/passerelle). */
+async function chiffrerPourCabinet(jwkPublique, objet){
+  const s = crypto.subtle, alea = n => crypto.getRandomValues(new Uint8Array(n));
+  const b64 = u8 => { let t = ''; for(let i = 0; i < u8.length; i += 0x8000) t += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return btoa(t); };
+  const algo = { name:'RSA-OAEP', hash:'SHA-256' };
+  const pub = await s.importKey('jwk', jwkPublique, algo, false, ['encrypt']);
+  const cleAes = alea(32), iv = alea(12);
+  const aes = await s.importKey('raw', cleAes, 'AES-GCM', false, ['encrypt']);
+  const donnees = new Uint8Array(await s.encrypt({ name:'AES-GCM', iv }, aes, new TextEncoder().encode(JSON.stringify(objet))));
+  const cle = new Uint8Array(await s.encrypt(algo, pub, cleAes));
+  return { format:'cabinet-blanchard/questionnaire-chiffre', version:1, alg:'RSA-OAEP-256+A256GCM', le:new Date().toISOString(), cle:b64(cle), iv:b64(iv), donnees:b64(donnees) };
+}
+if(window.DEPOT_CABINET && window.crypto && crypto.subtle){
+  const be = document.getElementById('btnEnvoyer');
+  be.style.display = '';
+  be.addEventListener('click', async function(){
+    const missing = validateBeforeDownload();
+    if(missing.length){ showMsg("Merci de compléter avant d'envoyer : " + missing.join(", ") + ".", "alertbox"); window.scrollTo({top:0, behavior:"smooth"}); return; }
+    be.disabled = true; be.textContent = 'Envoi en cours…';
+    try{
+      const paquet = await chiffrerPourCabinet(window.DEPOT_CABINET.cle, buildData());
+      const r = await fetch(window.DEPOT_CABINET.url, { method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ jeton: window.DEPOT_CABINET.jeton, paquet }) });
+      const rep = await r.json().catch(() => ({}));
+      if(!r.ok || !rep.ok) throw new Error(rep.erreur || 'envoi refusé');
+      showMsg("✅ Questionnaire envoyé au cabinet, de façon chiffrée : seul votre médecin peut le lire. Vous pouvez fermer cette page.", "okbox");
+      be.textContent = 'Envoyé ✓';
+    }catch(e){
+      be.disabled = false; be.textContent = 'Envoyer au cabinet (chiffré)';
+      showMsg("L'envoi n'a pas abouti (" + e.message + "). Vous pouvez réessayer, ou télécharger le questionnaire et l'apporter au cabinet.", "alertbox");
+    }
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+}
+
+/* Site vitrine (sans serveur, 11/10/2026) : la page fournit window.CLE_CABINET = { cle (clé PUBLIQUE),
+   email }. Le questionnaire est chiffré sur l'appareil du patient, qui l'envoie lui-même en pièce
+   jointe par e-mail (partage natif du téléphone quand il est disponible, sinon téléchargement + adresse).
+   Rien ne transite par le site ; seul le poste du médecin (ANESTHconsult, clé privée) peut le lire.
+   Le téléchargement en clair est masqué dans ce mode, pour éviter l'envoi de réponses lisibles par e-mail. */
+if(window.CLE_CABINET && window.CLE_CABINET.cle && window.crypto && crypto.subtle){
+  const me = document.getElementById('modeEmploi');
+  if(me) me.innerHTML = "<b>Comment utiliser ce questionnaire ?</b> Il fonctionne entièrement dans votre navigateur : aucune réponse n'est envoyée sur internet pendant que vous le remplissez. À la fin, touchez « Créer mon fichier chiffré pour le cabinet » : vos réponses sont <b>chiffrées sur votre appareil</b>, seul votre médecin pourra les lire. Envoyez ensuite ce fichier <b>en pièce jointe par e-mail</b> à " + (window.CLE_CABINET.email || "au cabinet") + ". Vous pouvez aussi imprimer vos réponses et les apporter.";
+  const bf = document.getElementById('btnFichierChiffre');
+  bf.style.display = '';
+  document.getElementById('btnDownload').style.display = 'none';
+  bf.addEventListener('click', async function(){
+    const missing = validateBeforeDownload();
+    if(missing.length){ showMsg("Merci de compléter avant de créer le fichier : " + missing.join(", ") + ".", "alertbox"); window.scrollTo({top:0, behavior:"smooth"}); return; }
+    bf.disabled = true;
+    try{
+      const paquet = await chiffrerPourCabinet(window.CLE_CABINET.cle, buildData());
+      const jour = new Date().toISOString().slice(0,10);
+      const nom = 'questionnaire-chiffre_' + jour + '.json';
+      const fichier = new File([JSON.stringify(paquet)], nom, { type:'application/json' });
+      const email = window.CLE_CABINET.email || '';
+      const objet = 'Questionnaire avant consultation';
+      let partage = false;
+      if(navigator.canShare && navigator.share && navigator.canShare({ files:[fichier] })){
+        try{ await navigator.share({ files:[fichier], title:objet, text:'Questionnaire chiffré pour le cabinet' + (email ? ' — à envoyer à ' + email : '') }); partage = true; }
+        catch(e){ if(e && e.name === 'AbortError') { bf.disabled = false; return; } }
+      }
+      if(!partage){
+        const url = URL.createObjectURL(fichier), a = document.createElement('a');
+        a.href = url; a.download = nom; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      }
+      const lien = email ? '<a href="mailto:' + email + '?subject=' + encodeURIComponent(objet) + '">' + email + '</a>' : 'au cabinet';
+      showMsg("✅ Fichier chiffré créé" + (partage ? "" : " (« " + nom + " », dans vos téléchargements)") + ". Envoyez-le en <b>pièce jointe</b> par e-mail à " + lien +
+        ", avec un objet neutre (par exemple « Questionnaire — RDV du … »). Son contenu est illisible pour toute autre personne que votre médecin.", "okbox");
+    }catch(e){
+      showMsg("Le fichier n'a pas pu être créé (" + e.message + "). Vous pouvez imprimer le questionnaire et l'apporter à la consultation.", "alertbox");
+    }
+    bf.disabled = false;
+    window.scrollTo({top:0, behavior:"smooth"});
+  });
+}
+
+document.getElementById('btnDownload').addEventListener('click', function(){
+  const missing = validateBeforeDownload();
+  if(missing.length){
+    showMsg("Merci de compléter avant de télécharger : " + missing.join(", ") + ".", "alertbox");
+    window.scrollTo({top:0, behavior:"smooth"});
+    return;
+  }
+  const data = buildData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const safeNom = ((val('q_nom')||val('q_nomNaissance'))+"_"+(val('q_prenom')||val('q_prenomsNaissance'))).replace(/[^a-zA-Z0-9_-]+/g,"_");
+  const dateTag = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = "questionnaire_"+safeNom+"_"+dateTag+".json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showMsg("Questionnaire téléchargé. Transmettez ce fichier à votre médecin anesthésiste (Médimail / Mon espace santé, ou remise sur place).", "okbox");
+  window.scrollTo({top:0, behavior:"smooth"});
+});
+
+document.getElementById('btnPrint').addEventListener('click', function(){
+  window.print();
+});
+
+init();
+</script>
+</body>
+</html>

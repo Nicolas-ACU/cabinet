@@ -335,3 +335,10 @@ fieldset.demande p { margin: 0; }
 .vitrine .questionnaires { display:flex; flex-wrap:wrap; gap:12px 18px; margin:12px 0 4px; }
 .vitrine .questionnaires > div { display:flex; flex-direction:column; gap:4px; max-width:340px; }
 .vitrine .questionnaires small { color: var(--gris); font-size:12.5px; line-height:1.35; }
+.vitrine .etapes-hero { list-style:none; padding:0; margin:18px 0 6px; display:grid; gap:14px; }
+.vitrine .etapes-hero > li { display:flex; gap:12px; align-items:flex-start; }
+.vitrine .etapes-hero .num { flex:none; width:30px; height:30px; border-radius:50%; background: var(--foret); color:#fff; display:grid; place-content:center; font-weight:700; }
+.vitrine .etapes-hero strong { display:block; font-size:17px; }
+.vitrine .etapes-hero > li > div > small { display:block; color: var(--gris); font-size:14px; margin-bottom:6px; }
+.vitrine .etapes-hero .questionnaires, .vitrine .etapes-hero .actions-hero { margin:6px 0 0; }
+.vitrine .nobr { white-space: nowrap; }
